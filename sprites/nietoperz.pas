@@ -20,9 +20,9 @@ p0Frame2 : array[0.._HEIGHT - 1] of byte =
 p1Frame1 : array[0.._HEIGHT - 1] of byte = 
     ($40, $40, $C0, $F0, $BC, $FE, $FE, $CF, $C3, $1, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00);
 
-
 p1Frame2 : array[0.._HEIGHT - 1] of byte = 
     ($00, $40, $43, $CE, $DE, $BC, $FC, $F8, $E8, $C0, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00);
+
 
   PMGMEM : word;
   px0, py0 : byte;
@@ -77,11 +77,16 @@ begin
   Writeln('Player animation');
   Poke(53248, px0); Poke(53249, px1);
 
-  for i := 1 to 50 do begin
+  for i := 1 to 100 do 
+  begin
     NextFrame;
     Poke(704, p0Color[0]);
     Poke(705, p1Color[0]);
     Pause(5);
+    // px0 := (i and 3) xor 3;
+    // px1 := (i and 3) xor 3;
+    Inc(px0); Inc(px1);
+    Poke(53248, px0); Poke(53249, px1);
     Inc(frame);
     if frame > 2 then frame := 1;
   end;
