@@ -14,19 +14,22 @@ asm {
 };
 end;
 
-procedure vbl;assembler;interrupt;
-asm {
-    phr ; store registers
-    
-;   *** example test routine    
-;    mva 20 atari.colbk // blink background
-    
-;   *** RMT play routine
-;    lda MSX
-;    ldy MSX+1
-;    jsr RMT.TRMT.PLAY
+procedure vbl;interrupt;
+begin
+    asm {
+        phr ; store registers
+    };
+    if music then msx.play;
+    asm {
+    ;   *** example test routine    
+    ;    mva 20 atari.colbk // blink background
+        
+    ;   *** RMT play routine
+    ;    lda MSX
+    ;    ldy MSX+1
+    ;    jsr RMT.TRMT.PLAY
 
-    plr ; restore registers
-    jmp $E462 ; jump to system VBL handler
-};
+        plr ; restore registers
+        jmp $E462 ; jump to system VBL handler
+    };
 end;
