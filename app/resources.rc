@@ -34,6 +34,5 @@ DISPLAY_LIST_ADDRESS rcasm 'dlist.asm'
 BACKGROUND_MEM rcdata 'assets/tlo1.gr8'
 
 ; rmt module
-
-#RMT_PLAYER_ADDRESS RMTPLAY 'rmt_feat.asm' 0
-#RMT_MODULE_ADDRESS RMT 'song.rmt'
+RMT_PLAYER_ADDRESS RMTPLAY 'assets/rmt_feat.asm' 0
+RMT_MODULE_ADDRESS RMT 'assets/starekino.rmt'

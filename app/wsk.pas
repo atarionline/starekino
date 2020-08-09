@@ -1,4 +1,4 @@
-program madStrap;
+program wsk;
 { $librarypath '../blibs/'}
 uses atari, crt, rmt; // b_utils;
 
@@ -8,6 +8,11 @@ const
 
 var
     hpos:word;
+    music:boolean;
+    msx:TRMT;
+    old_vbl,old_dli:Pointer;
+
+{$i interrupts.inc}
 
 procedure setBackgroundOffset(x:word);
 var vram:word;
@@ -25,6 +30,19 @@ begin
 end;
 
 begin
+(*  set and run vbl interrupt *)
+    GetIntVec(iVBL, old_vbl);
+    GetIntVec(iDLI, old_dli);
+
+    music:=false;
+    (*  initialize RMT player  *)
+    msx.player := pointer(RMT_PLAYER_ADDRESS);
+    msx.modul := pointer(RMT_MODULE_ADDRESS);
+    msx.Init(0);
+
+    SetIntVec(iVBL, @vbl);
+    SetIntVec(iDLI, @dli);
+
     Pause;
     SDLSTL := DISPLAY_LIST_ADDRESS;
     color4:=$f;
