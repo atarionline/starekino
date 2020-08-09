@@ -1,7 +1,7 @@
 program wsk;
-{ $librarypath '../blibs/'}
+{$librarypath '../../blibs/'}
 {$librarypath '../../MADS/blibs/'}
-uses atari, crt, rmt, b_system;
+uses atari, rmt, b_system, b_crt;
 
 const
 {$i const.inc}
@@ -13,7 +13,7 @@ var
     msx:TRMT;
     old_vbl,old_dli:Pointer;
 
-    pcolr : array[0..3] of byte absolute $2C0;   // Player color
+    pcolr : array[0..3] of byte absolute $D012;   // Player color
     hposp : array[0..3] of byte absolute $D000;  // Player horizontal position
     sizep : array[0..3] of byte absolute $D008;  // Player size
     hposm : array[0..3] of byte absolute $D004;  // Missile horizontal position
@@ -32,49 +32,45 @@ var
 {$i interrupts.inc}
 
 procedure setBackgroundOffset(x:word);
-var vram:word;
+var vram1,vram2:byte;
     line:byte;
     dlist:word;
 begin
-    vram:=BACKGROUND_MEM + (x shr 2);
+    vram1:= x shr 2;
+    vram2:= vram1 or $80;
     dlist:=DISPLAY_LIST_ADDRESS + 7;
-    for line:=0 to 127 do begin
-        Dpoke(dlist,vram);
-        inc(dlist,3);
-        inc(vram,128);
-    end;
+    line:=64;
+    repeat
+        poke(dlist,vram1);
+        poke(dlist+3,vram2);
+        inc(dlist,6);
+        dec(line);
+    until line = 0;
     hscrol := (x and 3) xor 3;
 end;
 
 
 begin
-    (*  save vbl and dli *)
-    // GetIntVec(iVBL, old_vbl);
-    // GetIntVec(iDLI, old_dli);
-    // SystemOff;
+    SystemOff;
 
-    (*  initialize RMT player  *)
     msx.player := pointer(RMT_PLAYER_ADDRESS);
     msx.modul := pointer(RMT_MODULE_ADDRESS);
     msx.Init(0);
 
-    (*  set and run vbl interrupt *)
-    SetIntVec(iVBL, @vbl);
-    // SetIntVec(iDLI, @dli);
-    // EnableVBLI(@vbl);
+    WaitFrame;
+    EnableVBLI(@vbl);
 
-    pause;
-    // waitframe;
-    SDLSTL := DISPLAY_LIST_ADDRESS;
-    // DLISTL := DISPLAY_LIST_ADDRESS;
-    color4:=$f;
-    color1:=$f;
-    color2:=0;
+
+    DLISTL := DISPLAY_LIST_ADDRESS;
+
+    colbk:=$f;
+    colpf1:=$f;
+    colpf2:=0;
     gractl:=3; // Turn on P/M graphics
     pmbase:=Hi(PMGBASE);
 
     // P/M graphics double resolution
-    sdmctl := 46;
+    dmactl := 46;
 
     // Clear player memory
     FillByte(Pointer(PMGBASE + 384), 512 + 128, 0);
@@ -95,7 +91,6 @@ begin
     hposp[0] := px0;
     hposp[1] := px1;
     
-    music:=true;
 
     // Draw player 0 and set vertical position
     Move(player0, Pointer(PMGBASE + 512 + 128*0 + py0), 29);
@@ -104,11 +99,19 @@ begin
 
     gractl := 3;
 
+    music:=true;
+
+
+    repeat
     for hpos:=0 to 339 do begin 
+        waitframe;
         setBackgroundOffset(hpos);
-        pause;
     end;
-    ReadKey;
+    for hpos:=338 downto 1 do begin 
+        waitframe;
+        setBackgroundOffset(hpos);
+    end;
+    until false;
 
     music:= false;
     msx.stop;
@@ -117,4 +120,5 @@ begin
     // DisableVBLI;
     nmien:=0;
     Dmactl:= 0;
+    
 end.
