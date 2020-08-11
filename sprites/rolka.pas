@@ -36,6 +36,9 @@ p1Frame3 : array[0.._HEIGHT - 1] of byte =
 p1Frame4 : array[0.._HEIGHT - 1] of byte = 
     ($E0, $F8, $FC, $CE, $86, $87, $CF, $7F, $7F, $CF, $87, $86, $CE, $FC, $F8, $E0, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00);
 
+pos_rolka: array[0..79] of byte =
+    (0,20,28,32,40,32,28,20,0,20,28,32,40,32,28,20,0,20,28,32,40,32,28,20,0,10,14,16,20,16,14,10,0,10,14,16,20,16,14,10,0,10,14,16,20,16,14,10,0,5,7,8,10,8,7,5,0,5,7,8,10,8,7,5,0,5,7,8,10,8,7,5,0,5,7,8,10,8,7,5);
+
   PMGMEM : word;
   px0, py0 : byte;
   px1, py1 : byte;
@@ -45,20 +48,20 @@ p1Frame4 : array[0.._HEIGHT - 1] of byte =
 procedure NextFrame;
 begin
   if frame = 1 then begin
-    Move(p0Frame1, Pointer(PMGMEM + 512 + py0), _HEIGHT);
-    Move(p1Frame1, Pointer(PMGMEM + 512 + 128 + py1), _HEIGHT);
+    Move(p0Frame1, Pointer(PMGMEM + 512 + py0 - pos_rolka[i]), _HEIGHT);
+    Move(p1Frame1, Pointer(PMGMEM + 512 + 128 + py1 - pos_rolka[i]), _HEIGHT);
   end
   else if frame = 2 then begin
-    Move(p0Frame2, Pointer(PMGMEM + 512 + PY0), _HEIGHT);
-    Move(p1Frame2, Pointer(PMGMEM + 512 + 128 + PY1), _HEIGHT);
+    Move(p0Frame2, Pointer(PMGMEM + 512 + py0 - pos_rolka[i]), _HEIGHT);
+    Move(p1Frame2, Pointer(PMGMEM + 512 + 128 + py1 - pos_rolka[i]), _HEIGHT);
   end
   else if frame = 3 then begin
-    Move(p0Frame3, Pointer(PMGMEM + 512 + PY0), _HEIGHT);
-    Move(p1Frame3, Pointer(PMGMEM + 512 + 128 + PY1), _HEIGHT);
+    Move(p0Frame3, Pointer(PMGMEM + 512 + py0 - pos_rolka[i]), _HEIGHT);
+    Move(p1Frame3, Pointer(PMGMEM + 512 + 128 + py1 - pos_rolka[i]), _HEIGHT);
   end
   else if frame = 4 then begin
-    Move(p0Frame4, Pointer(PMGMEM + 512 + PY0), _HEIGHT);
-    Move(p1Frame4, Pointer(PMGMEM + 512 + 128 + PY1), _HEIGHT);
+    Move(p0Frame4, Pointer(PMGMEM + 512 + py0 - pos_rolka[i]), _HEIGHT);
+    Move(p1Frame4, Pointer(PMGMEM + 512 + 128 + py1 - pos_rolka[i]), _HEIGHT);
   end;
 end;
 
@@ -97,12 +100,12 @@ begin
   Writeln('Player animation');
   Poke(53248, px0); Poke(53249, px1);
 
-  for i := 1 to 90 do begin
+  for i := 1 to 80 do begin
     Poke(53248, px0); Poke(53249, px1);
     Poke(704, p0Color[0]);
     Poke(705, p1Color[0]);
     // Poke(53248, px0); Poke(53249, px1);
-    Dec(px0,5); Dec(px1,5);
+    Dec(px0,3); Dec(px1,3);
     NextFrame;
     Inc(frame);
     if frame > 4 then frame := 1;
