@@ -12,14 +12,17 @@ Scroll tempo
 Obiekty - przeszkadzajki
 lecące tasmy, które ma omijać,sinusoida , (ruch - omijac cofanie albo skok), ludzie
 szalony bicykl (przekok)
-kotz góry (przeskok), kot leci w doł, nietoprerz nad parkiem lub po całej planszy.
+kot z góry (przeskok), kot leci w doł, nietoprerz nad parkiem lub po całej planszy.
 
 
 wir z parasolką, 3 x
 
 sterowanie - joystick
 STEFAN może chodzic w lewo lub w prawo, plansza jest zamknieta, musimy wykonać wszystkie zadania.
-Zbiera co ma zbierac unikając przeszkód
+
+Proponuję by gracz zbierał pojawiające się na planszy butelki oraz monety.
+
+Zbiera co ma zbierac unikając przeszkód.
 Jak zbierze cały bilet może isc na koniec planszy i wejdzie do kina,
 rozpoznać to będzie można po tym, ze na budynku kina będzie napis otwarte
 Hr 300-192. MAd studio
