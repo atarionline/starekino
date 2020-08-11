@@ -31,7 +31,7 @@ DISPLAY_LIST_ADDRESS rcasm 'dlist.asm'
 
 #STRINGS_ADDRESS rcasm 'strings.asm'
 
-BACKGROUND_MEM rcdata 'assets/tlo2.gr8'
+BACKGROUND_MEM rcdata 'assets/tlo4.gr8'
 
 ; rmt module
 RMT_PLAYER_ADDRESS RMTPLAY 'assets/rmt_feat.asm' 0

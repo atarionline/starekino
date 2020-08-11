@@ -26,8 +26,8 @@ var
         (0, 0, 0, 0, 0, 0, 0, 0, 136, 112, 32, 16, 136, 136, 132, 132, 142, 21, 21, 17, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
     // Player position
-    px0 : byte = 181; py0 : byte = 70;
-    px1 : byte = 188; py1 : byte = 70;
+    px0 : byte = 181; py0 : byte = 80;
+    px1 : byte = 188; py1 : byte = 80;
 
 {$i interrupts.inc}
 
@@ -63,9 +63,9 @@ begin
 
     DLISTL := DISPLAY_LIST_ADDRESS;
 
-    colbk:=$f;
-    colpf1:=$f;
-    colpf2:=0;
+    colbk:=$c;
+    colpf1:=$0;
+    colpf2:=$c;
     gractl:=3; // Turn on P/M graphics
     pmbase:=Hi(PMGBASE);
 
@@ -79,13 +79,13 @@ begin
     // Priority register
     // - Players and missiles in front of playfield
     // - Multiple color players
-    gprior := 33;
+    gprior := 1;
     sizep[0] := 0;  // Player 0 normal size
     sizep[1] := 0;  // Player 1 normal size
 
     // Player/missile color
-    pcolr[0] := 29;
-    pcolr[1] := 29;
+    pcolr[0] := $0;
+    pcolr[1] := $0;
 
     // Player horizontal position
     hposp[0] := px0;
@@ -99,7 +99,7 @@ begin
 
     gractl := 3;
 
-    music:=true;
+    music:=false;
 
 
     repeat
