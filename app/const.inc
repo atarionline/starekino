@@ -14,5 +14,7 @@ RMT_PLAYER_ADDRESS = $A600;
 // ;*** and here goes all other stuff
 
 NONE = $ff;
+_HEIGHT = 30;
+_SIZE = 84;
 
 
