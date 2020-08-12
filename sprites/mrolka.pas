@@ -34,41 +34,40 @@ p1Frame3 : array[0.._HEIGHT - 1] of byte =
 p1Frame4 : array[0.._HEIGHT - 1] of byte = 
    ($00, $00, $00, $00, $00, $00, $00, $00, $C0, $70, $38, $78, $FC, $6C, $44, $EC, $F8, $78, $F0, $C0, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00);
 
-pos_rolka: array[0..79] of byte =
-    
+reel_pos: array[0..79] of byte =
     (0,4,12,20,28,32,36,32,28,20,12,4,0,4,12,20,28,32,36,32,28,20,12,4,0,2,6,10,14,16,18,16,14,10,6,2,0,2,6,10,14,16,18,16,14,10,6,2,0,1,3,5,7,8,9,8,7,5,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
   
   
   PMGMEM : word;
-  px0, py0 : byte;
-  px1, py1 : byte;
+  reel_px0, reel_py0 : byte;
+  reel_px1, reel_py1 : byte;
   frame : byte;
   i : byte;
 
 procedure NextFrame;
 begin
   if frame = 1 then begin
-    Move(p0Frame1, Pointer(PMGMEM + 512 + py0 - pos_rolka[i]), _HEIGHT);
-    Move(p1Frame1, Pointer(PMGMEM + 512 + 128 + py1 - pos_rolka[i]), _HEIGHT);
+    Move(p0Frame1, Pointer(PMGMEM + 512 + reel_py0 - reel_pos[i]), _HEIGHT);
+    Move(p1Frame1, Pointer(PMGMEM + 512 + 128 + reel_py1 - reel_pos[i]), _HEIGHT);
   end
   else if frame = 2 then begin
-    Move(p0Frame2, Pointer(PMGMEM + 512 + py0 - pos_rolka[i]), _HEIGHT);
-    Move(p1Frame2, Pointer(PMGMEM + 512 + 128 + py1 - pos_rolka[i]), _HEIGHT);
+    Move(p0Frame2, Pointer(PMGMEM + 512 + reel_py0 - reel_pos[i]), _HEIGHT);
+    Move(p1Frame2, Pointer(PMGMEM + 512 + 128 + reel_py1 - reel_pos[i]), _HEIGHT);
   end
   else if frame = 3 then begin
-    Move(p0Frame3, Pointer(PMGMEM + 512 + py0 - pos_rolka[i]), _HEIGHT);
-    Move(p1Frame3, Pointer(PMGMEM + 512 + 128 + py1 - pos_rolka[i]), _HEIGHT);
+    Move(p0Frame3, Pointer(PMGMEM + 512 + reel_py0 - reel_pos[i]), _HEIGHT);
+    Move(p1Frame3, Pointer(PMGMEM + 512 + 128 + reel_py1 - reel_pos[i]), _HEIGHT);
   end
   else if frame = 4 then begin
-    Move(p0Frame4, Pointer(PMGMEM + 512 + py0 - pos_rolka[i]), _HEIGHT);
-    Move(p1Frame4, Pointer(PMGMEM + 512 + 128 + py1 - pos_rolka[i]), _HEIGHT);
+    Move(p0Frame4, Pointer(PMGMEM + 512 + reel_py0 - reel_pos[i]), _HEIGHT);
+    Move(p1Frame4, Pointer(PMGMEM + 512 + 128 + reel_py1 - reel_pos[i]), _HEIGHT);
   end;
 end;
 
 begin
   // Player position
-  px0 := 180; py0 := 60;
-  px1 := 188; py1 := 60;
+  reel_px0 := 210; reel_py0 := 60;
+  reel_px1 := 218; reel_py1 := 60;
 
   // Set environment
   InitGraph(0);
@@ -98,14 +97,14 @@ begin
   frame := 1;
 
   Writeln('Player animation');
-  Poke(53248, px0); Poke(53249, px1);
+  Poke(53248, reel_px0); Poke(53249, reel_px1);
 
   for i := 1 to 80 do begin
-    Poke(53248, px0); Poke(53249, px1);
+    Poke(53248, reel_px0); Poke(53249, reel_px1);
     Poke(704, p0Color[0]);
     Poke(705, p1Color[0]);
-    // Poke(53248, px0); Poke(53249, px1);
-    Dec(px0,2); Dec(px1,2);
+    // Poke(53248, reel_px0); Poke(53249, reel_px1);
+    Dec(reel_px0,3); Dec(reel_px1,3);
     NextFrame;
     Inc(frame);
     if frame > 4 then frame := 1;
