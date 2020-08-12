@@ -10,28 +10,28 @@ var
   p1Color : array[0..3] of byte = (29, 29, 29, 29);
 
 // Player 0 data
-p0Frame1 : array[0.._HEIGHT - 1] of byte = 
+reel_p0Frame1 : array[0.._HEIGHT - 1] of byte = 
     ($00, $00, $00, $00, $00, $00, $00, $00, $3, $F, $1B, $11, $3B, $3E, $3E, $3B, $11, $1B, $F, $33, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00);
-p0Frame2 : array[0.._HEIGHT - 1] of byte = 
+reel_p0Frame2 : array[0.._HEIGHT - 1] of byte = 
    ($00, $00, $00, $00, $00, $00, $00, $00, $3, $F, $1E, $1F, $37, $22, $36, $3F, $1E, $1C, $E, $3, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00);
 
-p0Frame3 : array[0.._HEIGHT - 1] of byte = 
+reel_p0Frame3 : array[0.._HEIGHT - 1] of byte = 
     ($00, $00, $00, $00, $00, $00, $00, $00, $3, $F, $1B, $11, $3B, $3E, $3E, $3B, $11, $1B, $F, $3, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00);
 
-p0Frame4 : array[0.._HEIGHT - 1] of byte = 
+reel_p0Frame4 : array[0.._HEIGHT - 1] of byte = 
     ($00, $00, $00, $00, $00, $00, $00, $00, $23, $2F, $3E, $1F, $37, $22, $36, $3F, $1E, $1C, $E, $3, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00);
 
 // Player 1 data
-p1Frame1 : array[0.._HEIGHT - 1] of byte = 
+reel_p1Frame1 : array[0.._HEIGHT - 1] of byte = 
     ($00, $00, $00, $00, $00, $00, $00, $00, $E0, $F0, $D8, $88, $DC, $7C, $7C, $DC, $88, $D8, $F0, $E0, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00);
 
-p1Frame2 : array[0.._HEIGHT - 1] of byte = 
+reel_p1Frame2 : array[0.._HEIGHT - 1] of byte = 
     ($00, $00, $00, $00, $00, $00, $00, $00, $C0, $70, $38, $78, $FC, $6C, $44, $EC, $F8, $78, $F4, $C4, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00);
 
-p1Frame3 : array[0.._HEIGHT - 1] of byte = 
+reel_p1Frame3 : array[0.._HEIGHT - 1] of byte = 
     ($00, $00, $00, $00, $00, $00, $00, $00, $EC, $F0, $D8, $88, $DC, $7C, $7C, $DC, $88, $D8, $F0, $E0, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00);
 
-p1Frame4 : array[0.._HEIGHT - 1] of byte = 
+reel_p1Frame4 : array[0.._HEIGHT - 1] of byte = 
    ($00, $00, $00, $00, $00, $00, $00, $00, $C0, $70, $38, $78, $FC, $6C, $44, $EC, $F8, $78, $F0, $C0, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00);
 
 reel_pos: array[0..79] of byte =
@@ -47,20 +47,20 @@ reel_pos: array[0..79] of byte =
 procedure NextFrame;
 begin
   if frame = 1 then begin
-    Move(p0Frame1, Pointer(PMGMEM + 512 + reel_py0 - reel_pos[i]), _HEIGHT);
-    Move(p1Frame1, Pointer(PMGMEM + 512 + 128 + reel_py1 - reel_pos[i]), _HEIGHT);
+    Move(reel_p0Frame1, Pointer(PMGMEM + 512 + reel_py0 - reel_pos[i]), _HEIGHT);
+    Move(reel_p1Frame1, Pointer(PMGMEM + 512 + 128 + reel_py1 - reel_pos[i]), _HEIGHT);
   end
   else if frame = 2 then begin
-    Move(p0Frame2, Pointer(PMGMEM + 512 + reel_py0 - reel_pos[i]), _HEIGHT);
-    Move(p1Frame2, Pointer(PMGMEM + 512 + 128 + reel_py1 - reel_pos[i]), _HEIGHT);
+    Move(reel_p0Frame2, Pointer(PMGMEM + 512 + reel_py0 - reel_pos[i]), _HEIGHT);
+    Move(reel_p1Frame2, Pointer(PMGMEM + 512 + 128 + reel_py1 - reel_pos[i]), _HEIGHT);
   end
   else if frame = 3 then begin
-    Move(p0Frame3, Pointer(PMGMEM + 512 + reel_py0 - reel_pos[i]), _HEIGHT);
-    Move(p1Frame3, Pointer(PMGMEM + 512 + 128 + reel_py1 - reel_pos[i]), _HEIGHT);
+    Move(reel_p0Frame3, Pointer(PMGMEM + 512 + reel_py0 - reel_pos[i]), _HEIGHT);
+    Move(reel_p1Frame3, Pointer(PMGMEM + 512 + 128 + reel_py1 - reel_pos[i]), _HEIGHT);
   end
   else if frame = 4 then begin
-    Move(p0Frame4, Pointer(PMGMEM + 512 + reel_py0 - reel_pos[i]), _HEIGHT);
-    Move(p1Frame4, Pointer(PMGMEM + 512 + 128 + reel_py1 - reel_pos[i]), _HEIGHT);
+    Move(reel_p0Frame4, Pointer(PMGMEM + 512 + reel_py0 - reel_pos[i]), _HEIGHT);
+    Move(reel_p1Frame4, Pointer(PMGMEM + 512 + 128 + reel_py1 - reel_pos[i]), _HEIGHT);
   end;
 end;
 
