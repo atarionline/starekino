@@ -84,19 +84,24 @@ begin
   Writeln('Player animation');
   Poke(53248, bat_px0); Poke(53249, bat_px1);
 
-  for i := 1 to _SIZE do 
-  begin
+  // for i := 1 to _SIZE do
+  i:= 1;
+  repeat 
+
     NextFrame;
     Poke(704, p0Color[0]);
     Poke(705, p1Color[0]);
     Pause(5);
 
-    Inc(bat_px0); Inc(bat_px1);
+    Inc(bat_px0,2); Inc(bat_px1,2);
     // Inc(bat_py0, bat_pos[i]); Inc(bat_py1, bat_pos[i]);
     Poke(53248, bat_px0); Poke(53249, bat_px1);
     Inc(frame);
     if frame > 2 then frame := 1;
-  end;
+    Inc(i);
+    if i = _SIZE then i:=1;
+  until false;
+  
 
   repeat until keypressed;
 end.
