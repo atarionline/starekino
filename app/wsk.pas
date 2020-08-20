@@ -23,7 +23,6 @@ var
     vsc : byte absolute $14;
 
     joy_1 : byte absolute $D300;
-    // pactl : byte absolute $D302;
     strig0: byte absolute $D010;
 
     // Player data
@@ -102,6 +101,7 @@ end;
 procedure Joystick_Move;
 begin
 
+    // mask to read only 4 youngest bits
     case joy_1 and 15 of
         joy_left: if hpos > 0 then dec(hpos);
         joy_right: if hpos < 339 then inc(hpos);
@@ -168,14 +168,18 @@ begin
 
     
 
-    music:=false;
+    music:=true;
 
     i:=1;
     repeat
         Joystick_Move;
         
         setBackgroundOffset(hpos);
-        // if strig0 = 0 then colbk:=$ff;
+        if strig0 = 0 then 
+        begin
+            msx.stop;
+            music:= not music;
+        end;
 
         // for hpos:=0 to 339 do begin 
         //     waitframe;
