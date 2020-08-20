@@ -18,3 +18,13 @@ _HEIGHT = 30;
 _SIZE = 84;
 
 
+	joy_none	= 15;
+	joy_up		= 14;
+	joy_down	= 13;
+	joy_left	= 11;
+	joy_left_up	= 10;
+	joy_left_down	= 9;
+	joy_right	= 7;
+	joy_right_up	= 6;
+	joy_right_down	= 5;
+

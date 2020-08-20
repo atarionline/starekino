@@ -19,7 +19,8 @@ var
     hposp : array[0..3] of byte absolute $D000;  // Player horizontal position
     sizep : array[0..3] of byte absolute $D008;  // Player size
     hposm : array[0..3] of byte absolute $D004;  // Missile horizontal position
-
+    gtiactl	: byte absolute	$D01B;
+    vsc : byte absolute $14;
 
     // Player data
     bike_p0 : array [0.._HEIGHT - 1] of byte =
@@ -74,10 +75,21 @@ end;
 procedure NextFrame;
 begin
   if frame = 1 then begin
+    // bike
+    Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
+    Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
+
+    // bat
     Move(bat_p0Frame1, Pointer(PMGBASE + 512 + (128 * 2) + bat_py0 + bat_pos[i]), _HEIGHT);
     Move(bat_p1Frame1, Pointer(PMGBASE + 512 + (128 * 3) + bat_py1 + bat_pos[i]), _HEIGHT);
+
   end
   else if frame = 2 then begin
+    //bike
+    Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
+    Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
+
+    // bat
     Move(bat_p0Frame2, Pointer(PMGBASE + 512 + (128 * 2) + bat_py0 + bat_pos[i]), _HEIGHT);
     Move(bat_p1Frame2, Pointer(PMGBASE + 512 + (128 * 3) + bat_py1 + bat_pos[i]), _HEIGHT);
   end;
@@ -113,7 +125,9 @@ begin
     // Priority register
     // - Players and missiles in front of playfield
     // - Multiple color players
-    gprior := 16;
+
+    gtiactl := 1;
+
     sizep[0] := 0;  // Player 0 normal size
     sizep[1] := 0;  // Player 1 normal size
     sizep[2] := 0;
@@ -122,8 +136,8 @@ begin
     // Player/missile color
     pcolr[0] := $0;
     pcolr[1] := $0;
-    pcolr[2] := $06;
-    pcolr[3] := $06;
+    pcolr[2] := $E0;
+    pcolr[3] := $E0;
 
     // Player horizontal position
     hposp[0] := bike_px0;
@@ -132,11 +146,11 @@ begin
     hposp[3] := bat_px1;
 
     // Draw player 0 and set vertical position
-    Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
+    // Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
     // Draw player 1 and set vertical position
-    Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
+    // Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
 
-    gractl := 3;
+    
 
     music:=false;
 
@@ -158,14 +172,16 @@ begin
         hposp[2]:=bat_px0;
         hposp[3]:=bat_px1;
         
-        Dec(bike_px0); Dec(bike_px1);
-        Inc(bat_px0,3); Inc(bat_px1,3);
-        Inc(frame);
+        Dec(bike_px0,2); Dec(bike_px1,2);
+        Inc(bat_px0); Inc(bat_px1);
+        // if (vsc mod 10) = 0 then Inc(frame);
+        if (vsc and 7) = 0 then Inc(frame);
         if frame > 2 then frame := 1;
         Inc(i);
         if i = _SIZE then i:=1;
      
-        waitframe;waitframe;waitframe;
+        waitframe;
+
     until false;
 
     music:= false;
