@@ -2,7 +2,7 @@ uses
   SysUtils, FastGraph, Crt;
 
 const
-  _HEIGHT = 16;
+  _HEIGHT = 32;
 
 var
   // Colors for players
@@ -10,14 +10,14 @@ var
   p1Color : array[0..3] of byte = (29, 29, 29, 29);
 
 
-reel_p1Frame1 : array[0.._HEIGHT - 1] of byte = ($00,$06,$0E,$9C,$DC,$FC,$FC,$FC,$F8,$F0,$E0,$C0,$00,$00,$00,$00);
-reel_p0Frame1 : array[0.._HEIGHT - 1] of byte = ($00,$30,$38,$1C,$1D,$1F,$1F,$1F,$0F,$07,$03,$01,$00,$00,$00,$00);
-reel_p1Frame2 : array[0.._HEIGHT - 1] of byte = ($00,$00,$80,$C0,$FF,$FF,$FE,$FC,$F8,$E0,$E0,$E0,$C0,$00,$00,$00);
-reel_p0Frame2 : array[0.._HEIGHT - 1] of byte = ($00,$00,$00,$01,$7F,$7F,$3F,$1F,$0F,$03,$03,$03,$01,$00,$00,$00);
-reel_p1Frame3 : array[0.._HEIGHT - 1] of byte = ($80,$C0,$E0,$F0,$F8,$FC,$FC,$FC,$FC,$FC,$EE,$C6,$00,$00,$00,$00);
-reel_p0Frame3 : array[0.._HEIGHT - 1] of byte = ($00,$01,$03,$07,$0F,$1F,$1F,$1F,$1F,$1F,$3B,$31,$00,$00,$00,$00);
-reel_p1Frame4 : array[0.._HEIGHT - 1] of byte = ($00,$00,$80,$C0,$FF,$FF,$FE,$FC,$F8,$E0,$E0,$E0,$C0,$00,$00,$00);
-reel_p0Frame4 : array[0.._HEIGHT - 1] of byte = ($00,$00,$00,$01,$7F,$7F,$3F,$1F,$0F,$03,$03,$03,$01,$00,$00,$00);
+reel_p1Frame1 : array[0.._HEIGHT - 1] of byte = ($0,$0,$0,$0,$0,$0,$0,$0,$00,$06,$0E,$9C,$DC,$FC,$FC,$FC,$F8,$F0,$E0,$C0,$00,$00,$00,$00,$0,$0,$0,$0,$0,$0,$0,$0);
+reel_p0Frame1 : array[0.._HEIGHT - 1] of byte = ($0,$0,$0,$0,$0,$0,$0,$0,$00,$30,$38,$1C,$1D,$1F,$1F,$1F,$0F,$07,$03,$01,$00,$00,$00,$00,$0,$0,$0,$0,$0,$0,$0,$0);
+reel_p1Frame2 : array[0.._HEIGHT - 1] of byte = ($0,$0,$0,$0,$0,$0,$0,$0,$00,$00,$80,$C0,$FF,$FF,$FE,$FC,$F8,$E0,$E0,$E0,$C0,$00,$00,$00,$0,$0,$0,$0,$0,$0,$0,$0);
+reel_p0Frame2 : array[0.._HEIGHT - 1] of byte = ($0,$0,$0,$0,$0,$0,$0,$0,$00,$00,$00,$01,$7F,$7F,$3F,$1F,$0F,$03,$03,$03,$01,$00,$00,$00,$0,$0,$0,$0,$0,$0,$0,$0);
+reel_p1Frame3 : array[0.._HEIGHT - 1] of byte = ($0,$0,$0,$0,$0,$0,$0,$0,$80,$C0,$E0,$F0,$F8,$FC,$FC,$FC,$FC,$FC,$EE,$C6,$00,$00,$00,$00,$0,$0,$0,$0,$0,$0,$0,$0);
+reel_p0Frame3 : array[0.._HEIGHT - 1] of byte = ($0,$0,$0,$0,$0,$0,$0,$0,$00,$01,$03,$07,$0F,$1F,$1F,$1F,$1F,$1F,$3B,$31,$00,$00,$00,$00,$0,$0,$0,$0,$0,$0,$0,$0);
+reel_p1Frame4 : array[0.._HEIGHT - 1] of byte = ($0,$0,$0,$0,$0,$0,$0,$0,$00,$00,$80,$C0,$FF,$FF,$FE,$FC,$F8,$E0,$E0,$E0,$C0,$00,$00,$00,$0,$0,$0,$0,$0,$0,$0,$0);
+reel_p0Frame4 : array[0.._HEIGHT - 1] of byte = ($0,$0,$0,$0,$0,$0,$0,$0,$00,$00,$00,$01,$7F,$7F,$3F,$1F,$0F,$03,$03,$03,$01,$00,$00,$00,$0,$0,$0,$0,$0,$0,$0,$0);
  
 
 
