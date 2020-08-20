@@ -15,7 +15,7 @@ RMT_MODULE_ADDRESS = $AC00;
 // ;*** and here goes all other stuff
 
 NONE = $ff;
-_HEIGHT = 30;
+_HEIGHT = 22;
 _SIZE = 84;
 
 
