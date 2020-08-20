@@ -22,6 +22,10 @@ var
     gtiactl	: byte absolute	$D01B;
     vsc : byte absolute $14;
 
+    joy_1 : byte absolute $D300;
+    // pactl : byte absolute $D302;
+    strig0: byte absolute $D010;
+
     // Player data
     bike_p0 : array [0.._HEIGHT - 1] of byte =
         ($00, $00, $00, $00, $00, $00, $18, $C, $8, $1E, $2C, $4A, $4A, $91, $91, $91, $81, $81, $42, $42, $24, $18, $00, $00, $00, $00, $00, $00, $00, $00);
@@ -95,6 +99,18 @@ begin
   end;
 end;
 
+procedure Joystick_Move;
+begin
+
+    case joy_1 and 15 of
+        joy_left: if hpos > 0 then dec(hpos);
+        joy_right: if hpos < 339 then inc(hpos);
+    end;
+end;
+
+
+
+
 begin
     SystemOff;
 
@@ -156,6 +172,11 @@ begin
 
     i:=1;
     repeat
+        Joystick_Move;
+        
+        setBackgroundOffset(hpos);
+        // if strig0 = 0 then colbk:=$ff;
+
         // for hpos:=0 to 339 do begin 
         //     waitframe;
         //     setBackgroundOffset(hpos);
