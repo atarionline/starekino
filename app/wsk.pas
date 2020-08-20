@@ -120,6 +120,7 @@ begin
 
     WaitFrame;
     EnableVBLI(@vbl);
+    EnableDLI(@dli1);
 
 
     DLISTL := DISPLAY_LIST_ADDRESS;
