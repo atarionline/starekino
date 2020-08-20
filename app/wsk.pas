@@ -83,8 +83,8 @@ begin
     Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
 
     // bat
-    Move(bat_p0Frame1, Pointer(PMGBASE + 512 + (128 * 2) + bat_py0 + bat_pos[i]), _HEIGHT);
-    Move(bat_p1Frame1, Pointer(PMGBASE + 512 + (128 * 3) + bat_py1 + bat_pos[i]), _HEIGHT);
+    Move(bat_p0Frame1, Pointer(PMGBASE + 512 + (128 * 0) + bat_py0 + bat_pos[i]), _HEIGHT);
+    Move(bat_p1Frame1, Pointer(PMGBASE + 512 + (128 * 1) + bat_py1 + bat_pos[i]), _HEIGHT);
 
   end
   else if frame = 2 then begin
@@ -93,8 +93,8 @@ begin
     Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
 
     // bat
-    Move(bat_p0Frame2, Pointer(PMGBASE + 512 + (128 * 2) + bat_py0 + bat_pos[i]), _HEIGHT);
-    Move(bat_p1Frame2, Pointer(PMGBASE + 512 + (128 * 3) + bat_py1 + bat_pos[i]), _HEIGHT);
+    Move(bat_p0Frame2, Pointer(PMGBASE + 512 + (128 * 0) + bat_py0 + bat_pos[i]), _HEIGHT);
+    Move(bat_p1Frame2, Pointer(PMGBASE + 512 + (128 * 1) + bat_py1 + bat_pos[i]), _HEIGHT);
   end;
 end;
 
@@ -198,7 +198,7 @@ begin
         hposp[2]:=bat_px0;
         hposp[3]:=bat_px1;
         
-        Dec(bike_px0,2); Dec(bike_px1,2);
+        Dec(bike_px0,1); Dec(bike_px1,1);
         Inc(bat_px0); Inc(bat_px1);
         // if (vsc mod 10) = 0 then Inc(frame);
         if (vsc and 7) = 0 then Inc(frame);
