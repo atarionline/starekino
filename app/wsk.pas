@@ -8,11 +8,12 @@ const
 {$r resources.rc}
 
 var
-    hpos:word;
-    music:boolean;
-    msx:TRMT;
-    old_vbl,old_dli:Pointer;
+    hpos : word;
+    music : boolean;
+    msx : TRMT;
+    old_vbl,old_dli : Pointer;
     i : byte;
+    d : shortint;
     frame : byte;
 
     pcolr : array[0..3] of byte absolute $D012;   // Player color
@@ -23,74 +24,74 @@ var
     vsc : byte absolute $14;
 
     joy_1 : byte absolute $D300;
-    strig0: byte absolute $D010;
+    strig0 : byte absolute $D010;
 
     // Player data
     bike_p0 : array [0.._HEIGHT - 1] of byte =
-        ($00, $00, $18, $C, $8, $1E, $2C, $4A, $4A, $91, $91, $91, $81, $81, $42, $42, $24, $18, $00, $00, $00, $00);
+        ($18, $C, $8, $1E, $2C, $4A, $4A, $91, $91, $91, $81, $81, $42, $42, $24, $18, $00, $00);
     bike_p1 : array [0.._HEIGHT - 1] of byte =
-        ($00, $00, $00, $00, $00, $88, $70, $20, $10, $8, $8, $4, $4, $E, $15, $15, $11, $E, $00, $00, $00, $00);
+        ($00, $00, $00, $88, $70, $20, $10, $8, $8, $4, $4, $E, $15, $15, $11, $E, $00, $00);
 
     // Player 0 data
     bat_p0Frame1 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $2, $2, $3, $F, $3E, $7F, $7F, $F3, $C3, $80, $00, $00, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $2, $2, $3, $F, $3E, $7F, $7F, $F3, $C3, $80, $00, $00, $00, $00, $00, $00);
     bat_p0Frame2 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $00, $2, $C2, $73, $7B, $3E, $3F, $1F, $17, $3, $00, $00, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $00, $2, $C2, $73, $7B, $3E, $3F, $1F, $17, $3, $00, $00, $00, $00, $00, $00);
     bat_p0Frame3 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $2, $2, $3, $F, $3E, $7F, $7F, $F3, $C3, $80, $00, $00, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $2, $2, $3, $F, $3E, $7F, $7F, $F3, $C3, $80, $00, $00, $00, $00, $00, $00);
     bat_p0Frame4 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $00, $2, $C2, $73, $7B, $3E, $3F, $1F, $17, $3, $00, $00, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $00, $2, $C2, $73, $7B, $3E, $3F, $1F, $17, $3, $00, $00, $00, $00, $00, $00);
 
     // Player 1 data
     bat_p1Frame1 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $40, $40, $C0, $F0, $BC, $FE, $FE, $CF, $C3, $1, $00, $00, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $40, $40, $C0, $F0, $BC, $FE, $FE, $CF, $C3, $1, $00, $00, $00, $00, $00, $00);
     bat_p1Frame2 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $00, $40, $43, $CE, $DE, $BC, $FC, $F8, $E8, $C0, $00, $00, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $00, $40, $43, $CE, $DE, $BC, $FC, $F8, $E8, $C0, $00, $00, $00, $00, $00, $00);
     bat_p1Frame3 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $40, $40, $C0, $F0, $BC, $FE, $FE, $CF, $C3, $1, $00, $00, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $40, $40, $C0, $F0, $BC, $FE, $FE, $CF, $C3, $1, $00, $00, $00, $00, $00, $00);
     bat_p1Frame4 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $00, $40, $43, $CE, $DE, $BC, $FC, $F8, $E8, $C0, $00, $00, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $00, $40, $43, $CE, $DE, $BC, $FC, $F8, $E8, $C0, $00, $00, $00, $00, $00, $00);
 
     bat_pos: array[0.._SIZE - 1] of byte =
         (0,0,0,0,0,0,0,0,0,2,2,2,4,4,4,6,6,6,8,8,8,9,9,10,9,9,8,8,8,6,6,6,4,4,4,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,4,4,4,6,6,6,8,8,8,9,9,10,9,9,8,8,8,6,6,6,4,4,4,0,0,0,0,0,0,0,0);
 
     // Player 0 data
     sreel_p0Frame1 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $3, $F, $1B, $11, $3B, $3E, $3E, $3B, $11, $1B, $F, $33, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $00, $3, $F, $1B, $11, $3B, $3E, $3E, $3B, $11, $1B, $F, $33, $00, $00, $00);
     sreel_p0Frame2 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $3, $F, $1E, $1F, $37, $22, $36, $3F, $1E, $1C, $E, $3, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $00, $3, $F, $1E, $1F, $37, $22, $36, $3F, $1E, $1C, $E, $3, $00, $00, $00);
 
     sreel_p0Frame3 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $3, $F, $1B, $11, $3B, $3E, $3E, $3B, $11, $1B, $F, $3, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $00, $3, $F, $1B, $11, $3B, $3E, $3E, $3B, $11, $1B, $F, $3, $00, $00, $00);
 
     sreel_p0Frame4 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $23, $2F, $3E, $1F, $37, $22, $36, $3F, $1E, $1C, $E, $3, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $00, $23, $2F, $3E, $1F, $37, $22, $36, $3F, $1E, $1C, $E, $3, $00, $00, $00);
 
     // Player 1 data
     sreel_p1Frame1 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $E0, $F0, $D8, $88, $DC, $7C, $7C, $DC, $88, $D8, $F0, $E0, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $00, $E0, $F0, $D8, $88, $DC, $7C, $7C, $DC, $88, $D8, $F0, $E0, $00, $00, $00);
 
     sreel_p1Frame2 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $C0, $70, $38, $78, $FC, $6C, $44, $EC, $F8, $78, $F4, $C4, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $00, $C0, $70, $38, $78, $FC, $6C, $44, $EC, $F8, $78, $F4, $C4, $00, $00, $00);
 
     sreel_p1Frame3 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $EC, $F0, $D8, $88, $DC, $7C, $7C, $DC, $88, $D8, $F0, $E0, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $00, $EC, $F0, $D8, $88, $DC, $7C, $7C, $DC, $88, $D8, $F0, $E0, $00, $00, $00);
 
     sreel_p1Frame4 : array[0.._HEIGHT - 1] of byte = 
-        ($00, $00, $00, $00, $C0, $70, $38, $78, $FC, $6C, $44, $EC, $F8, $78, $F0, $C0, $00, $00, $00, $00, $00, $00);
+        ($00, $00, $00, $C0, $70, $38, $78, $FC, $6C, $44, $EC, $F8, $78, $F0, $C0, $00, $00, $00);
 
     sreel_pos: array[0.._SIZE - 1] of byte =
-    (0,0,0,0,0,0,0,0,0,2,2,2,4,4,4,6,6,6,8,8,8,9,9,10,9,9,8,8,8,6,6,6,4,4,4,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,4,4,4,6,6,6,8,8,8,9,9,10,9,9,8,8,8,6,6,6,4,4,4,0,0,0,0,0,0,0,0);
+        (0,0,0,0,0,2,2,2,4,4,4,6,6,6,8,8,8,9,9,9,10,10,10,9,9,9,8,8,8,6,6,6,4,4,4,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,4,4,4,6,6,6,8,8,8,9,9,9,10,10,10,9,9,9,8,8,8,6,6,6,4,4,4,0,0,0,0);
 
     // Player position
-    bike_px0 : byte = 180; bike_py0 : byte = 88;
-    bike_px1 : byte = 187; bike_py1 : byte = 88;
+    bike_px0 : byte = 240; bike_py0 : byte = 90;
+    bike_px1 : byte = 247; bike_py1 : byte = 90;
     
     bat_px0 : byte = 80; bat_py0 : byte = 24;
     bat_px1 : byte = 88; bat_py1 : byte = 24;
 
-    sreel_px0 : byte = 180; sreel_py0 : byte = 70;
-    sreel_px1 : byte = 187; sreel_py1 : byte = 70;
+    sreel_px0 : byte = 100; sreel_py0 : byte = 71;
+    sreel_px1 : byte = 107; sreel_py1 : byte = 71;
 
 {$i interrupts.inc}
 
@@ -129,8 +130,8 @@ begin
   end
   else if frame = 2 then begin
     //bike
-    Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
-    Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
+    // Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
+    // Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
 
     // bat
     Move(bat_p0Frame2, Pointer(PMGBASE + 512 + (128 * 0) + bat_py0 + bat_pos[i]), _HEIGHT);
@@ -141,6 +142,9 @@ begin
     Move(sreel_p1Frame2, Pointer(PMGBASE + 512 + (128 * 1) + sreel_py1 - sreel_pos[i]), _HEIGHT);
   end
   else if frame = 3 then begin
+    // Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
+    // Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
+
     Move(bat_p0Frame3, Pointer(PMGBASE + 512 + (128 * 0) + bat_py0 + bat_pos[i]), _HEIGHT);
     Move(bat_p1Frame3, Pointer(PMGBASE + 512 + (128 * 1) + bat_py1 + bat_pos[i]), _HEIGHT);
 
@@ -148,6 +152,9 @@ begin
     Move(sreel_p1Frame3, Pointer(PMGBASE + 512 + (128 * 1) + sreel_py1 - sreel_pos[i]), _HEIGHT);
   end
   else if frame = 4 then begin
+    // Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
+    // Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
+
     Move(bat_p0Frame4, Pointer(PMGBASE + 512 + (128 * 0) + bat_py0 + bat_pos[i]), _HEIGHT);
     Move(bat_p1Frame4, Pointer(PMGBASE + 512 + (128 * 1) + bat_py1 + bat_pos[i]), _HEIGHT);
 
@@ -162,8 +169,22 @@ begin
 
     // mask to read only 4 youngest bits
     case joy_1 and 15 of
-        joy_left: if hpos > 0 then dec(hpos);
-        joy_right: if hpos < 339 then inc(hpos);
+        joy_left:   begin
+                        if hpos > 0 then begin
+                            Inc(bike_px0); Inc(bike_px1);
+                            Inc(bat_px0); Inc(bat_px1);
+                            Inc(sreel_px0); Inc(sreel_px1);
+                            dec(hpos);
+                        end;
+                    end;
+        joy_right:  begin
+                        if hpos < 339 then begin
+                            Dec(bike_px0); Dec(bike_px1);
+                            Dec(bat_px0); Dec(bat_px1);
+                            Dec(sreel_px0); Dec(sreel_px1);
+                            inc(hpos);
+                        end;
+                    end;
     end;
 end;
 
@@ -196,8 +217,8 @@ begin
 
     // Clear player memory
     // FillByte(Pointer(PMGBASE + 384), 512 + 128, 0);
-    // FillByte(Pointer(PMGBASE + 384), 512 + 128*3, 0);
-    PMG_Clear;
+    FillByte(Pointer(PMGBASE + 384), 512 + 128*3, 0);
+    // PMG_Clear;
 
 
     // Priority register
@@ -259,9 +280,10 @@ begin
         // hposp[2]:=bat_px0;
         // hposp[3]:=bat_px1;
         
-        Dec(bike_px0,2); Dec(bike_px1,2);
+        Dec(bike_px0); Dec(bike_px1);
         Inc(bat_px0); Inc(bat_px1);
         Dec(sreel_px0); Dec(sreel_px1);
+        // sreel_px0:=sreel_px0 + d; sreel_px1:=sreel_px1 + d;
         // if (vsc mod 10) = 0 then Inc(frame);
         if (vsc and 7) = 0 then Inc(frame);
         if frame > 4 then frame := 1;
