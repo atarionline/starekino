@@ -93,6 +93,8 @@ var
     sreel_px0 : byte = 100; sreel_py0 : byte = 71;
     sreel_px1 : byte = 107; sreel_py1 : byte = 71;
 
+    guy_x : byte = 100; guy_y : byte = 80;
+
 {$i interrupts.inc}
 
 procedure setBackgroundOffset(x:word);
@@ -188,6 +190,14 @@ begin
     end;
 end;
 
+procedure Guy_Anim;
+begin
+    for i:=0 to 31 do
+    begin
+        // Move(Pointer(GUY1_MEM + (4 * i)), Pointer(BACKGROUND_MEM + (128 * i  * guy_y) + guy_x), 4);
+        Move(Pointer(GUY1_MEM + (4 * i)), Pointer(BACKGROUND_MEM + (128 * i)), 4);
+    end
+end;
 
 
 
@@ -249,6 +259,8 @@ begin
     // Draw player 1 and set vertical position
     // Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
 
+    
+    Guy_Anim;
     
 
     music:=false;

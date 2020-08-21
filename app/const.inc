@@ -11,6 +11,7 @@ BACKGROUND_MEM = $6000;
 RMT_PLAYER_ADDRESS = $A400;
 RMT_MODULE_ADDRESS = $AC00;
 
+GUY1_MEM = $B600;
 
 // ;*** and here goes all other stuff
 
