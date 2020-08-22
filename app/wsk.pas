@@ -15,6 +15,8 @@ var
     i : byte;
     d : shortint;
     frame : byte;
+    offset_x : Word;
+    offset_y : Word;
 
     pcolr : array[0..3] of byte absolute $D012;   // Player color
     hposp : array[0..3] of byte absolute $D000;  // Player horizontal position
@@ -119,17 +121,20 @@ end;
 procedure NextFrame;
 begin
   if frame = 1 then begin
-    // bike
-    Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
-    Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
+    (* bike
+        + 512 + (128 * 0) player0
+        + 512 + (128 * 1) player1
+    *)
+    Move(bike_p0, Pointer(PMGBASE + 512 + bike_py0), _HEIGHT);
+    Move(bike_p1, Pointer(PMGBASE + 512 + 128 + bike_py1), _HEIGHT);
 
     // bat
-    Move(bat_p0Frame1, Pointer(PMGBASE + 512 + (128 * 0) + bat_py0 + bat_pos[i]), _HEIGHT);
-    Move(bat_p1Frame1, Pointer(PMGBASE + 512 + (128 * 1) + bat_py1 + bat_pos[i]), _HEIGHT);
+    Move(bat_p0Frame1, Pointer(PMGBASE + 512 + bat_py0 + bat_pos[i]), _HEIGHT);
+    Move(bat_p1Frame1, Pointer(PMGBASE + 512 + 128 + bat_py1 + bat_pos[i]), _HEIGHT);
 
     // small reel
-    Move(sreel_p0Frame1, Pointer(PMGBASE + 512 + (128 * 0) + sreel_py0 - sreel_pos[i]), _HEIGHT);
-    Move(sreel_p1Frame1, Pointer(PMGBASE + 512 + (128 * 1) + sreel_py1 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p0Frame1, Pointer(PMGBASE + 512 + sreel_py0 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p1Frame1, Pointer(PMGBASE + 512 + 128 + sreel_py1 - sreel_pos[i]), _HEIGHT);
   end
   else if frame = 2 then begin
     //bike
@@ -137,32 +142,32 @@ begin
     // Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
 
     // bat
-    Move(bat_p0Frame2, Pointer(PMGBASE + 512 + (128 * 0) + bat_py0 + bat_pos[i]), _HEIGHT);
-    Move(bat_p1Frame2, Pointer(PMGBASE + 512 + (128 * 1) + bat_py1 + bat_pos[i]), _HEIGHT);
+    Move(bat_p0Frame2, Pointer(PMGBASE + 512 + bat_py0 + bat_pos[i]), _HEIGHT);
+    Move(bat_p1Frame2, Pointer(PMGBASE + 512 + 128 + bat_py1 + bat_pos[i]), _HEIGHT);
 
     //small reel
-    Move(sreel_p0Frame2, Pointer(PMGBASE + 512 + (128 * 0) + sreel_py0 - sreel_pos[i]), _HEIGHT);
-    Move(sreel_p1Frame2, Pointer(PMGBASE + 512 + (128 * 1) + sreel_py1 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p0Frame2, Pointer(PMGBASE + 512 + sreel_py0 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p1Frame2, Pointer(PMGBASE + 512 + 128 + sreel_py1 - sreel_pos[i]), _HEIGHT);
   end
   else if frame = 3 then begin
     // Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
     // Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
 
-    Move(bat_p0Frame3, Pointer(PMGBASE + 512 + (128 * 0) + bat_py0 + bat_pos[i]), _HEIGHT);
-    Move(bat_p1Frame3, Pointer(PMGBASE + 512 + (128 * 1) + bat_py1 + bat_pos[i]), _HEIGHT);
+    Move(bat_p0Frame3, Pointer(PMGBASE + 512 + bat_py0 + bat_pos[i]), _HEIGHT);
+    Move(bat_p1Frame3, Pointer(PMGBASE + 512 + 128 + bat_py1 + bat_pos[i]), _HEIGHT);
 
-    Move(sreel_p0Frame3, Pointer(PMGBASE + 512 + (128 * 0) + sreel_py0 - sreel_pos[i]), _HEIGHT);
-    Move(sreel_p1Frame3, Pointer(PMGBASE + 512 + (128 * 1) + sreel_py1 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p0Frame3, Pointer(PMGBASE + 512 + sreel_py0 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p1Frame3, Pointer(PMGBASE + 512 + 128 + sreel_py1 - sreel_pos[i]), _HEIGHT);
   end
   else if frame = 4 then begin
     // Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
     // Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
 
-    Move(bat_p0Frame4, Pointer(PMGBASE + 512 + (128 * 0) + bat_py0 + bat_pos[i]), _HEIGHT);
-    Move(bat_p1Frame4, Pointer(PMGBASE + 512 + (128 * 1) + bat_py1 + bat_pos[i]), _HEIGHT);
+    Move(bat_p0Frame4, Pointer(PMGBASE + 512 + bat_py0 + bat_pos[i]), _HEIGHT);
+    Move(bat_p1Frame4, Pointer(PMGBASE + 512 + 128 + bat_py1 + bat_pos[i]), _HEIGHT);
 
-    Move(sreel_p0Frame4, Pointer(PMGBASE + 512 + (128 * 0) + sreel_py0 - sreel_pos[i]), _HEIGHT);
-    Move(sreel_p1Frame4, Pointer(PMGBASE + 512 + (128 * 1) + sreel_py1 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p0Frame4, Pointer(PMGBASE + 512 + sreel_py0 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p1Frame4, Pointer(PMGBASE + 512 + 128 + sreel_py1 - sreel_pos[i]), _HEIGHT);
   end;
 
 end;
@@ -210,6 +215,7 @@ end;
 procedure Guy_BackGet;
 // Get backgrount into memory
 begin
+
     for i:=0 to _GUY_HEIGHT - 1 do
     begin
         Move(Pointer(BACKGROUND_MEM + (128 * i) + (128 * guy_y) + guy_x), Pointer(GUYBACK_MEM + (4 * i)), 4);
@@ -218,12 +224,15 @@ end;
 
 procedure Guy_Anim;
 begin
-    // Guy_BackSet;
     // Guy_BackGet;
-    
+    // Guy_BackSet;
+
+    offset_x:=0;
+    offset_y:=guy_y shl 7;
     for i:=0 to _GUY_HEIGHT - 1 do
     begin
-        Move(Pointer(GUY1_MEM + (4 * i)), Pointer(BACKGROUND_MEM + (128 * i) + (128 * guy_y) + guy_x), 4);
+        Inc(offset_x,128);
+        Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
         // waitframe;
     end;
 end;
@@ -256,7 +265,7 @@ begin
 
     // Clear player memory
     // FillByte(Pointer(PMGBASE + 384), 512 + 128, 0);
-    FillByte(Pointer(PMGBASE + 384), 512 + 128 * 3, 0);
+    FillByte(Pointer(PMGBASE + 384), 512 + 128, 0);
     // PMG_Clear;
 
 
@@ -293,9 +302,10 @@ begin
     guy_oldy:= guy_y;
 
     music:=false;
-
+    Guy_Anim;
     i:=1;
     repeat
+        // Guy_Anim;
         Joystick_Move;
 
         setBackgroundOffset(hpos);
@@ -318,10 +328,10 @@ begin
         // sreel_px0:=sreel_px0 + d; sreel_px1:=sreel_px1 + d;
         // if (vsc mod 10) = 0 then Inc(frame);
         if (vsc and 7) = 0 then Inc(frame);
+        // if (vsc and 2) = 0 then Guy_Anim;
         if frame > 4 then frame := 1;
         Inc(i);
         if i = _SIZE then i:=1;
-        // Guy_Anim;
         waitframe;
 
     until false;
