@@ -118,17 +118,17 @@ begin
     hscrol := (x and 3) xor 3;
 end;
 
-procedure Guy_BackSet;
-// Set remembered back into background 
-begin
-    offset_x:=0;
-    offset_y:=guy_oldy shl 7;
-    for i:=0 to _GUY_HEIGHT - 1 do
-    begin
-        Inc(offset_x,128);
-        Move(Pointer(GUYBACK_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_oldx), 4);
-    end;
-end;
+// procedure Guy_BackSet;
+// // Set remembered back into background 
+// begin
+//     offset_x:=0;
+//     offset_y:=guy_oldy shl 7;
+//     for i:=0 to _GUY_HEIGHT - 1 do
+//     begin
+//         Inc(offset_x,128);
+//         Move(Pointer(GUYBACK_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_oldx), 4);
+//     end;
+// end;
 
 procedure Guy_BackGet;
 // Get backgrount into memory
@@ -144,8 +144,8 @@ end;
 
 procedure Guy_Anim;
 begin
-    Guy_BackSet;
-    Guy_BackGet;
+    // Guy_BackSet;
+    // Guy_BackGet;
 
 
     offset_x:=0;
@@ -153,6 +153,10 @@ begin
     for i:=0 to _GUY_HEIGHT - 1 do
     begin
         Inc(offset_x,128);
+
+        Move(Pointer(GUYBACK_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_oldx), 4);
+        Move(Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), Pointer(GUYBACK_MEM + (i shl 2)), 4);
+
         Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
     end;
 end;
