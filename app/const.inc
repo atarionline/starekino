@@ -11,14 +11,16 @@ BACKGROUND_MEM = $6000;
 RMT_PLAYER_ADDRESS = $A400;
 RMT_MODULE_ADDRESS = $AC00;
 
-GUY1_MEM = $B600;
+GUYBACK_MEM = $B000;
+GUY1_MEM = GUYBACK_MEM + $118;
 
 // ;*** and here goes all other stuff
 
 NONE = $ff;
 _HEIGHT = 18;
 _SIZE = 84;
-
+_GUY_WIDTH = 32;
+_GUY_HEIGHT = 70;
 
 	joy_none	= 15;
 	joy_up		= 14;

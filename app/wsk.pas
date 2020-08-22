@@ -93,7 +93,8 @@ var
     sreel_px0 : byte = 100; sreel_py0 : byte = 71;
     sreel_px1 : byte = 107; sreel_py1 : byte = 71;
 
-    guy_x : byte = 100; guy_y : byte = 80;
+    guy_x : byte = 10; guy_y : byte = 57;
+    guy_oldx : byte; guy_oldy : byte;
 
 {$i interrupts.inc}
 
@@ -168,35 +169,63 @@ end;
 
 procedure Joystick_Move;
 begin
-
+    guy_oldx:=guy_x;
+    guy_oldy:=guy_y;
     // mask to read only 4 youngest bits
     case joy_1 and 15 of
         joy_left:   begin
-                        if hpos > 0 then begin
+                        if (hpos > 0) then begin
                             Inc(bike_px0); Inc(bike_px1);
                             Inc(bat_px0); Inc(bat_px1);
                             Inc(sreel_px0); Inc(sreel_px1);
                             dec(hpos);
                         end;
+                        if guy_x > 4 then begin
+                            Dec(guy_x);
+                        end;
                     end;
         joy_right:  begin
-                        if hpos < 339 then begin
+                        if (hpos < 339) then begin
                             Dec(bike_px0); Dec(bike_px1);
                             Dec(bat_px0); Dec(bat_px1);
                             Dec(sreel_px0); Dec(sreel_px1);
                             inc(hpos);
                         end;
+                        if guy_x < 128 then begin
+                            Inc(guy_x);
+                        end;
                     end;
+    end;
+end;
+
+procedure Guy_BackSet;
+// Set remembered back into background 
+begin
+    for i:=0 to _GUY_HEIGHT - 1 do
+    begin
+        Move(Pointer(GUYBACK_MEM + (4 * i)), Pointer(BACKGROUND_MEM + (128 * i) + (128 * guy_oldy) + guy_oldx), 4);
+    end;
+end;
+
+procedure Guy_BackGet;
+// Get backgrount into memory
+begin
+    for i:=0 to _GUY_HEIGHT - 1 do
+    begin
+        Move(Pointer(BACKGROUND_MEM + (128 * i) + (128 * guy_y) + guy_x), Pointer(GUYBACK_MEM + (4 * i)), 4);
     end;
 end;
 
 procedure Guy_Anim;
 begin
-    for i:=0 to 31 do
+    // Guy_BackSet;
+    // Guy_BackGet;
+    
+    for i:=0 to _GUY_HEIGHT - 1 do
     begin
-        // Move(Pointer(GUY1_MEM + (4 * i)), Pointer(BACKGROUND_MEM + (128 * i  * guy_y) + guy_x), 4);
-        Move(Pointer(GUY1_MEM + (4 * i)), Pointer(BACKGROUND_MEM + (128 * i)), 4);
-    end
+        Move(Pointer(GUY1_MEM + (4 * i)), Pointer(BACKGROUND_MEM + (128 * i) + (128 * guy_y) + guy_x), 4);
+        // waitframe;
+    end;
 end;
 
 
@@ -227,7 +256,7 @@ begin
 
     // Clear player memory
     // FillByte(Pointer(PMGBASE + 384), 512 + 128, 0);
-    FillByte(Pointer(PMGBASE + 384), 512 + 128*3, 0);
+    FillByte(Pointer(PMGBASE + 384), 512 + 128 * 3, 0);
     // PMG_Clear;
 
 
@@ -258,32 +287,23 @@ begin
     // Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
     // Draw player 1 and set vertical position
     // Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
-
     
-    Guy_Anim;
-    
+    // remember backgroud at start at initial player position 
+    guy_oldx:= guy_x;
+    guy_oldy:= guy_y;
 
     music:=false;
 
     i:=1;
     repeat
         Joystick_Move;
-        
+
         setBackgroundOffset(hpos);
         if strig0 = 0 then 
         begin
             msx.stop;
             music:= not music;
         end;
-
-        // for hpos:=0 to 339 do begin 
-        //     waitframe;
-        //     setBackgroundOffset(hpos);
-        // end;
-        // for hpos:=338 downto 1 do begin 
-        //     waitframe;
-        //     setBackgroundOffset(hpos);
-        // end;
         
         Nextframe;
 
@@ -301,7 +321,7 @@ begin
         if frame > 4 then frame := 1;
         Inc(i);
         if i = _SIZE then i:=1;
-     
+        // Guy_Anim;
         waitframe;
 
     until false;
