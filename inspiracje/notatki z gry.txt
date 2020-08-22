@@ -1,0 +1,63 @@
+gra astrofora, bilet do kina, 3 muzyczki, obraz rene magritt, wkapres paint, mr hopper, intro ascii art, parasolka, kolorowe tasmy uskok Kaz, zegarek bonus spowolnienie przeszkadzajek
+zaginione rzeczy punkty,
+
+obciac grafikę, sety grafika randomowo , zbieranie fragmentow filmu, lista, pozbierac  aby mogl wejsc https://playournotes.com/pl/nuty/w-malym-kinie/2100/nuty-na-fortepian
+From Me to Everyone:  09:01 PM
+https://programymuzyczne.pl/teoria-muzyki/piano, motylki kropki, puzzle, quizz
+ , tasma zorka decathlon, o 8/16/24 lub 32 piksele
+Scenariusz
+Gra zręcznościowa,
+Cel - dotarcie do kina na stary film 
+Scroll tempo 
+Obiekty - przeszkadzajki
+lecące tasmy, które ma omijać,sinusoida , (ruch - omijac cofanie albo skok), ludzie
+szalony bicykl (przekok)
+kot z góry (przeskok), kot leci w doł, nietoprerz nad parkiem lub po całej planszy.
+
+
+wir z parasolką, 3 x
+
+sterowanie - joystick
+STEFAN może chodzic w lewo lub w prawo, plansza jest zamknieta, musimy wykonać wszystkie zadania.
+
+Proponuję by gracz zbierał pojawiające się na planszy butelki oraz monety.
+
+Zbiera co ma zbierac unikając przeszkód.
+Jak zbierze cały bilet może isc na koniec planszy i wejdzie do kina,
+rozpoznać to będzie można po tym, ze na budynku kina będzie napis otwarte
+Hr 300-192. MAd studio
+W starym kinie
+
+
+===============================================================================
+
+Wykorzystanie spriteow:
+Kazdy wykorzystany sprite powinien miec puste linie z gory i dolu by automatycznie czyscic slad ruchu.
+1 Rower
+    Player0 - Lewa strona, szerokosc 8 pikseli
+    Player1 - Prawa strona szerokosc 8 pikseli
+    Rower porusza sie w poziomie z prawej do lewej.
+2 Nietoperz
+    8 pustych linnii z gory i dolu sprite do maskowania ruchu skoku
+    Player2 - Lewa strona, szerokosc 8 pikseli
+    Player3 - Prawa strona szerokosc 8 pikseli
+    Wysokosc 16 pikseli
+    Nietoperz bedzie poruszal sie z lewej do prawej oraz z prawej do lewej. Dodatkowo bedzie obnizal i zwiekszal swoj lot.
+
+3 Rolka filmu
+    8 pustych linnii z gory i dolu sprite do maskowania ruchu skoku
+    Player2 - Lewa strona, szerokosc 8 pikseli
+    Player3 - Prawa strona szerokosc 8 pikseli
+    Wysokosc 16 pikseli
+    Rolka porusza sie z prawej do lewej według fali gasnącej. Imituje to podskakiwanie rolki na drodze.
+
+4 Mała rolka
+    8 pustych linnii z gory i dolu sprite do maskowania ruchu skoku
+    Player0 - Lewa strona, szerokosc 6 pikseli
+    Player1 - Prawa strona szerokosc 6 pikseli
+    Wysokosc 12 pikseli
+    Mała rolka porusza sie z prawej do lewej. Imitacja podskakiwania rolki na drodze.
+    -  według fali gasnącej
+    - jednostajnie ale z bardzo wysoką amplitudą.
+
+

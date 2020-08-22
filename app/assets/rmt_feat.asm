@@ -1,4 +1,5 @@
 ;* --------BEGIN--------
+;* E:\atari\Raster Music Tracker\wsk_a800.rmt
 FEAT_SFX		equ 1
 FEAT_GLOBALVOLUMEFADE	equ 0		;RMTGLOBALVOLUMEFADE variable
 FEAT_NOSTARTINGSONGLINE	equ 0
@@ -33,7 +34,7 @@ FEAT_TABLETYPE		equ 0		;(0 times)
 FEAT_TABLEMODE		equ 0		;(0 times)
 FEAT_TABLEGO		equ 0		;(0 times)
 FEAT_AUDCTLMANUALSET		equ 0		;(0 times)
-FEAT_VOLUMEMIN		equ 1		;(2 times)
-FEAT_EFFECTVIBRATO		equ 1		;(2 times)
+FEAT_VOLUMEMIN		equ 0		;(0 times)
+FEAT_EFFECTVIBRATO		equ 0		;(0 times)
 FEAT_EFFECTFSHIFT		equ 0		;(0 times)
 ;* --------END--------
