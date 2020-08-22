@@ -121,26 +121,32 @@ end;
 procedure Guy_BackSet;
 // Set remembered back into background 
 begin
+    offset_x:=0;
+    offset_y:=guy_oldy shl 7;
     for i:=0 to _GUY_HEIGHT - 1 do
     begin
-        Move(Pointer(GUYBACK_MEM + (4 * i)), Pointer(BACKGROUND_MEM + (128 * i) + (128 * guy_oldy) + guy_oldx), 4);
+        Inc(offset_x,128);
+        Move(Pointer(GUYBACK_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_oldx), 4);
     end;
 end;
 
 procedure Guy_BackGet;
 // Get backgrount into memory
 begin
-
+    offset_x:=0;
+    offset_y:=guy_y shl 7;
     for i:=0 to _GUY_HEIGHT - 1 do
     begin
-        Move(Pointer(BACKGROUND_MEM + (128 * i) + (128 * guy_y) + guy_x), Pointer(GUYBACK_MEM + (4 * i)), 4);
+        Inc(offset_x,128);
+        Move(Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), Pointer(GUYBACK_MEM + (i shl 2)), 4);
     end;
 end;
 
 procedure Guy_Anim;
 begin
-    // Guy_BackGet;
-    // Guy_BackSet;
+    Guy_BackSet;
+    Guy_BackGet;
+
 
     offset_x:=0;
     offset_y:=guy_y shl 7;
@@ -301,7 +307,8 @@ begin
     guy_oldx:= guy_x;
     guy_oldy:= guy_y;
     
-    // Guy_Anim;
+    Guy_BackGet;
+    Guy_Anim;
 
     music:=false;
     i:=1;
