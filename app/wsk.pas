@@ -118,6 +118,39 @@ begin
     hscrol := (x and 3) xor 3;
 end;
 
+procedure Guy_BackSet;
+// Set remembered back into background 
+begin
+    for i:=0 to _GUY_HEIGHT - 1 do
+    begin
+        Move(Pointer(GUYBACK_MEM + (4 * i)), Pointer(BACKGROUND_MEM + (128 * i) + (128 * guy_oldy) + guy_oldx), 4);
+    end;
+end;
+
+procedure Guy_BackGet;
+// Get backgrount into memory
+begin
+
+    for i:=0 to _GUY_HEIGHT - 1 do
+    begin
+        Move(Pointer(BACKGROUND_MEM + (128 * i) + (128 * guy_y) + guy_x), Pointer(GUYBACK_MEM + (4 * i)), 4);
+    end;
+end;
+
+procedure Guy_Anim;
+begin
+    // Guy_BackGet;
+    // Guy_BackSet;
+
+    offset_x:=0;
+    offset_y:=guy_y shl 7;
+    for i:=0 to _GUY_HEIGHT - 1 do
+    begin
+        Inc(offset_x,128);
+        Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
+    end;
+end;
+
 procedure NextFrame;
 begin
   if frame = 1 then begin
@@ -188,6 +221,7 @@ begin
                         if guy_x > 4 then begin
                             Dec(guy_x);
                         end;
+                        Guy_Anim;
                     end;
         joy_right:  begin
                         if (hpos < 339) then begin
@@ -199,44 +233,10 @@ begin
                         if guy_x < 128 then begin
                             Inc(guy_x);
                         end;
+                        Guy_Anim;
                     end;
     end;
 end;
-
-procedure Guy_BackSet;
-// Set remembered back into background 
-begin
-    for i:=0 to _GUY_HEIGHT - 1 do
-    begin
-        Move(Pointer(GUYBACK_MEM + (4 * i)), Pointer(BACKGROUND_MEM + (128 * i) + (128 * guy_oldy) + guy_oldx), 4);
-    end;
-end;
-
-procedure Guy_BackGet;
-// Get backgrount into memory
-begin
-
-    for i:=0 to _GUY_HEIGHT - 1 do
-    begin
-        Move(Pointer(BACKGROUND_MEM + (128 * i) + (128 * guy_y) + guy_x), Pointer(GUYBACK_MEM + (4 * i)), 4);
-    end;
-end;
-
-procedure Guy_Anim;
-begin
-    // Guy_BackGet;
-    // Guy_BackSet;
-
-    offset_x:=0;
-    offset_y:=guy_y shl 7;
-    for i:=0 to _GUY_HEIGHT - 1 do
-    begin
-        Inc(offset_x,128);
-        Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
-        // waitframe;
-    end;
-end;
-
 
 
 begin
@@ -300,12 +300,12 @@ begin
     // remember backgroud at start at initial player position 
     guy_oldx:= guy_x;
     guy_oldy:= guy_y;
+    
+    // Guy_Anim;
 
     music:=false;
-    Guy_Anim;
     i:=1;
     repeat
-        // Guy_Anim;
         Joystick_Move;
 
         setBackgroundOffset(hpos);
