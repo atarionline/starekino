@@ -142,7 +142,7 @@ begin
     end;
 end;
 
-procedure Guy_Anim;
+procedure Guy_Anim(f : byte);
 begin
     // Guy_BackSet;
     // Guy_BackGet;
@@ -156,8 +156,11 @@ begin
 
         Move(Pointer(GUYBACK_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_oldx), 4);
         Move(Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), Pointer(GUYBACK_MEM + (i shl 2)), 4);
-
-        Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
+        if f = 1 then
+            Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
+        if f = 3 then
+            Move(Pointer(GUY3_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
+        
     end;
 end;
 
@@ -231,7 +234,7 @@ begin
                         if guy_x > 4 then begin
                             Dec(guy_x);
                         end;
-                        Guy_Anim;
+                        Guy_Anim(3);
                     end;
         joy_right:  begin
                         if (hpos < 339) then begin
@@ -243,7 +246,7 @@ begin
                         if guy_x < 128 then begin
                             Inc(guy_x);
                         end;
-                        Guy_Anim;
+                        Guy_Anim(1);
                     end;
     end;
 end;
@@ -312,7 +315,7 @@ begin
     guy_oldy:= guy_y;
     
     Guy_BackGet;
-    Guy_Anim;
+    Guy_Anim(1);
 
     music:=false;
     i:=1;

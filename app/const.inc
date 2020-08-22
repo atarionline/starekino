@@ -13,6 +13,7 @@ RMT_MODULE_ADDRESS = $AC00;
 
 GUYBACK_MEM = $B000;
 GUY1_MEM = GUYBACK_MEM + $118;
+GUY3_MEM = GUY1_MEM + $118;
 
 // ;*** and here goes all other stuff
 
