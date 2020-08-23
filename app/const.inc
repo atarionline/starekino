@@ -21,7 +21,7 @@ GUY4_MEM = GUY3_MEM + $118;
 
 TITLEBACK_MEM = $B600;
 TITLE_MEM = TITLEBACK_MEM + $1400;
-
+TITLEEND_MEM = $D800;
 // ;*** and here goes all other stuff
 
 NONE = $ff;

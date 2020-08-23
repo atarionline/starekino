@@ -34,9 +34,11 @@ TITLE_LIST_ADDRESS rcasm 'dlist_title.asm'
 
 BACKGROUND_MEM rcdata 'assets/tlo4.gr8'
 TITLEBACK_MEM rcdata 'assets/plansza_pusta2.gr8'
+TITLE_MEM rcdata 'assets/plansza_title.gr8'
+TITLEEND_MEM rcdata 'assets/plansza_koniec.gr8'
 GUY1_MEM rcdata 'assets/ludzik1.gr8'
 GUY3_MEM rcdata 'assets/ludzik3.gr8'
 
 ; rmt module
 RMT_PLAYER_ADDRESS RMTPLAY 'assets/rmt_feat.asm' 0
-RMT_MODULE_ADDRESS RMT 'assets/starekino3.rmt'
+RMT_MODULE_ADDRESS RMT 'assets/starekino4.rmt'

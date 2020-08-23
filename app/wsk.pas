@@ -17,6 +17,8 @@ var
     offset_x : Word;
     offset_y : Word;
     gamestatus : Byte = 0;
+    tab: array [0..127] of byte; 
+
 
     pcolr : array[0..3] of byte absolute $D012;   // Player color
     hposp : array[0..3] of byte absolute $D000;  // Player horizontal position
@@ -267,10 +269,10 @@ begin
     guy_oldx:= guy_x;
     guy_oldy:= guy_y;
     
+    waitframe;
+
     Guy_BackGet;
     Guy_Anim(1);
-
-    music:=true;
 
     i:=1;
     repeat
@@ -294,6 +296,8 @@ begin
         if frame > 4 then frame := 1;
         Inc(i);
         if i = _SIZE then i:=1;
+    
+        if (strig0 = 0) then gamestatus:= 2;
         waitframe;
 
     until gamestatus <> 1;
@@ -301,7 +305,18 @@ end;
 
 procedure title;
 begin
+    DisableDLI;
     DLISTL := TITLE_LIST_ADDRESS;
+
+    offset_x:=0;
+    offset_y:=20 shl 5 + 8;
+    for i:=0 to 82 do
+    begin
+        Inc(offset_x,40);
+        Move(Pointer(TITLE_MEM + (i shl 4) + i), Pointer(TITLEBACK_MEM + offset_x + offset_y + 43 ), 17);
+        // Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(TITLEBACK_MEM + offset_x + offset_y + 44), 4);
+    end;
+
 
     colbk:=$0;
     colpf1:=$0;
@@ -317,7 +332,24 @@ end;
 
 procedure endgame;
 begin
+    DisableDLI;
     DLISTL := TITLE_LIST_ADDRESS;
+
+    offset_x:=0;
+    offset_y:=20 shl 5 + 8;
+    for i:=0 to 82 do
+    begin
+        Inc(offset_x,40);
+        Move(Pointer(TITLEEND_MEM + (i shl 4) + i), Pointer(TITLEBACK_MEM + offset_x + offset_y + 43 ), 17);
+        // Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(TITLEBACK_MEM + offset_x + offset_y + 44), 4);
+    end;
+
+
+
+    colbk:=$0;
+    colpf1:=$0;
+    colpf2:=$c;
+    colpf3:=$c;
 
     repeat
     
@@ -373,7 +405,7 @@ begin
     // hposp[2] := bat_px0;
     // hposp[3] := bat_px1;
     
-
+    music:=true;
 
     repeat
         case gamestatus of
