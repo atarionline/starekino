@@ -59,8 +59,8 @@ end;
 
 begin
   // Player position
-  reel_px0 := 210; reel_py0 := 60;
-  reel_px1 := 218; reel_py1 := 60;
+  reel_px0 := 10; reel_py0 := 60;
+  reel_px1 := 18; reel_py1 := 60;
 
   // Set environment
   InitGraph(0);
@@ -97,7 +97,7 @@ begin
     Poke(704, p0Color[0]);
     Poke(705, p1Color[0]);
     // Poke(53248, reel_px0); Poke(53249, reel_px1);
-    Dec(reel_px0,3); Dec(reel_px1,3);
+    Inc(reel_px0,3); Inc(reel_px1,3);
     NextFrame;
     Inc(frame);
     if frame > 4 then frame := 1;
