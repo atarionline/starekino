@@ -28,12 +28,14 @@
 #CHARSET_ADDRESS rcdata 'font.fnt'
  
 DISPLAY_LIST_ADDRESS rcasm 'dlist.asm'
+TITLE_LIST_ADDRESS rcasm 'dlist_title.asm'
 
 #STRINGS_ADDRESS rcasm 'strings.asm'
 
 BACKGROUND_MEM rcdata 'assets/tlo4.gr8'
-GUY1_MEM rcdata 'assets/ludzik1i.gr8'
-GUY3_MEM rcdata 'assets/ludzik2i.gr8'
+TITLEBACK_MEM rcdata 'assets/plansza_pusta.gr8'
+GUY1_MEM rcdata 'assets/ludzik1.gr8'
+GUY3_MEM rcdata 'assets/ludzik3.gr8'
 
 ; rmt module
 RMT_PLAYER_ADDRESS RMTPLAY 'assets/rmt_feat.asm' 0

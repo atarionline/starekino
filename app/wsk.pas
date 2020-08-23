@@ -13,10 +13,10 @@ var
     msx : TRMT;
     old_vbl,old_dli : Pointer;
     i : byte;
-    d : shortint;
     frame : byte;
     offset_x : Word;
     offset_y : Word;
+    gamestatus : Byte = 0;
 
     pcolr : array[0..3] of byte absolute $D012;   // Player color
     hposp : array[0..3] of byte absolute $D000;  // Player horizontal position
@@ -252,6 +252,69 @@ begin
 end;
 
 
+
+procedure startgame;
+begin
+    EnableDLI(@dli1);
+    DLISTL := DISPLAY_LIST_ADDRESS;
+    // remember backgroud at start at initial player position 
+    guy_oldx:= guy_x;
+    guy_oldy:= guy_y;
+    
+    Guy_BackGet;
+    Guy_Anim(1);
+
+    music:=false;
+    i:=1;
+    repeat
+        Joystick_Move;
+
+        setBackgroundOffset(hpos);
+        
+        Nextframe;
+
+        // hposp[0]:=bike_px0;
+        // hposp[1]:=bike_px1;
+        // hposp[2]:=bat_px0;
+        // hposp[3]:=bat_px1;
+        
+        Dec(bike_px0); Dec(bike_px1);
+        Inc(bat_px0); Inc(bat_px1);
+        Dec(sreel_px0); Dec(sreel_px1);
+
+        if (vsc and 7) = 0 then Inc(frame);
+        // if (vsc and 2) = 0 then Guy_Anim;
+        if frame > 4 then frame := 1;
+        Inc(i);
+        if i = _SIZE then i:=1;
+        waitframe;
+
+    until gamestatus <> 1;
+end;
+
+procedure title;
+begin
+    DLISTL := TITLE_LIST_ADDRESS;
+
+    repeat
+
+       waitframe; 
+    until (strig0 = 0);
+    gamestatus:= 1;
+end;
+
+procedure endgame;
+begin
+    DLISTL := TITLE_LIST_ADDRESS;
+
+    repeat
+    
+       waitframe; 
+    until (strig0 = 0);
+    gamestatus:= 0;
+end;
+
+
 begin
     SystemOff;
 
@@ -261,10 +324,10 @@ begin
 
     WaitFrame;
     EnableVBLI(@vbl);
-    EnableDLI(@dli1);
 
 
-    DLISTL := DISPLAY_LIST_ADDRESS;
+
+
 
     colbk:=$c;
     colpf1:=$0;
@@ -304,51 +367,17 @@ begin
     // hposp[1] := bike_px1;
     // hposp[2] := bat_px0;
     // hposp[3] := bat_px1;
-
-    // Draw player 0 and set vertical position
-    // Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
-    // Draw player 1 and set vertical position
-    // Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
     
-    // remember backgroud at start at initial player position 
-    guy_oldx:= guy_x;
-    guy_oldy:= guy_y;
-    
-    Guy_BackGet;
-    Guy_Anim(1);
 
-    music:=false;
-    i:=1;
+
     repeat
-        Joystick_Move;
-
-        setBackgroundOffset(hpos);
-        if strig0 = 0 then 
-        begin
-            msx.stop;
-            music:= not music;
+        case gamestatus of
+            0: title;
+            1: startgame;
+            2: endgame;
         end;
-        
-        Nextframe;
-
-        // hposp[0]:=bike_px0;
-        // hposp[1]:=bike_px1;
-        // hposp[2]:=bat_px0;
-        // hposp[3]:=bat_px1;
-        
-        Dec(bike_px0); Dec(bike_px1);
-        Inc(bat_px0); Inc(bat_px1);
-        Dec(sreel_px0); Dec(sreel_px1);
-
-        if (vsc and 7) = 0 then Inc(frame);
-        // if (vsc and 2) = 0 then Guy_Anim;
-        if frame > 4 then frame := 1;
-        Inc(i);
-        if i = _SIZE then i:=1;
-        waitframe;
-
     until false;
-
+    
     music:= false;
     msx.stop;
     // waitframe;
