@@ -257,6 +257,12 @@ procedure startgame;
 begin
     EnableDLI(@dli1);
     DLISTL := DISPLAY_LIST_ADDRESS;
+
+    colbk:=$c;
+    colpf1:=$0;
+    colpf2:=$c;
+    colpf3:=$c;
+
     // remember backgroud at start at initial player position 
     guy_oldx:= guy_x;
     guy_oldy:= guy_y;
@@ -264,7 +270,8 @@ begin
     Guy_BackGet;
     Guy_Anim(1);
 
-    music:=false;
+    music:=true;
+
     i:=1;
     repeat
         Joystick_Move;
@@ -296,6 +303,11 @@ procedure title;
 begin
     DLISTL := TITLE_LIST_ADDRESS;
 
+    colbk:=$0;
+    colpf1:=$0;
+    colpf2:=$c;
+    colpf3:=$c;
+
     repeat
 
        waitframe; 
@@ -326,13 +338,6 @@ begin
     EnableVBLI(@vbl);
 
 
-
-
-
-    colbk:=$c;
-    colpf1:=$0;
-    colpf2:=$c;
-    colpf3:=$c;
     gractl:=3; // Turn on P/M graphics
     pmbase:=Hi(PMGBASE);
 

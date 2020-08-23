@@ -46,7 +46,7 @@ dl_start
   dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
   dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
   dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
-  dta $0f, $4f, a($c600), $0f, $0f, $0f, $0f, $0f, $0f, $0f
+  dta $0f, $4f, a($c000), $0f, $0f, $0f, $0f, $0f, $0f, $0f
   dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
   dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
   dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f

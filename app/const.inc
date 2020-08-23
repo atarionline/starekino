@@ -20,7 +20,7 @@ GUY3_MEM = GUY2_MEM + $118;
 GUY4_MEM = GUY3_MEM + $118;
 
 TITLEBACK_MEM = $B600;
-TITLE_MEM = TITLEBACK_MEM + $F00;
+TITLE_MEM = TITLEBACK_MEM + $1400;
 
 // ;*** and here goes all other stuff
 
