@@ -18,18 +18,23 @@ GUY3_MEM = GUY1_MEM + $118;
 // ;*** and here goes all other stuff
 
 NONE = $ff;
+
+// sprite size
 _HEIGHT = 18;
+// moves table size
 _SIZE = 84;
+
+// player size
 _GUY_WIDTH = 32;
 _GUY_HEIGHT = 70;
 
-	joy_none	= 15;
-	joy_up		= 14;
-	joy_down	= 13;
-	joy_left	= 11;
-	joy_left_up	= 10;
-	joy_left_down	= 9;
-	joy_right	= 7;
-	joy_right_up	= 6;
-	joy_right_down	= 5;
+joy_none	= 15;
+joy_up		= 14;
+joy_down	= 13;
+joy_left	= 11;
+joy_left_up	= 10;
+joy_left_down	= 9;
+joy_right	= 7;
+joy_right_up	= 6;
+joy_right_down	= 5;
 

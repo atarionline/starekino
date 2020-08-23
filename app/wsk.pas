@@ -339,8 +339,7 @@ begin
         Dec(bike_px0); Dec(bike_px1);
         Inc(bat_px0); Inc(bat_px1);
         Dec(sreel_px0); Dec(sreel_px1);
-        // sreel_px0:=sreel_px0 + d; sreel_px1:=sreel_px1 + d;
-        // if (vsc mod 10) = 0 then Inc(frame);
+
         if (vsc and 7) = 0 then Inc(frame);
         // if (vsc and 2) = 0 then Guy_Anim;
         if frame > 4 then frame := 1;
