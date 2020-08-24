@@ -309,11 +309,13 @@ begin
     DLISTL := TITLE_LIST_ADDRESS;
 
     offset_x:=0;
-    offset_y:=20 shl 5 + 8;
+    offset_y:=(50 shl 4) + 1;
     for i:=0 to 82 do
     begin
         Inc(offset_x,40);
-        Move(Pointer(TITLE_MEM + (i shl 4) + i), Pointer(TITLEBACK_MEM + offset_x + offset_y + 43 ), 17);
+        // Move(Pointer(TITLE_MEM + (i shl 4) + i), Pointer(TITLEBACK_MEM + offset_x + offset_y + 50 ), 17);
+        Move(Pointer(TITLE_MEM + (i shl 4) + i), Pointer(TITLEBACK_MEM + offset_x + offset_y + 10), 17);
+
         // Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(TITLEBACK_MEM + offset_x + offset_y + 44), 4);
     end;
 
@@ -336,11 +338,12 @@ begin
     DLISTL := TITLE_LIST_ADDRESS;
 
     offset_x:=0;
-    offset_y:=20 shl 5 + 8;
+    // offset_y:=20 shl 5 + 8;
+    offset_y:=(50 shl 4) + 1;
     for i:=0 to 82 do
     begin
         Inc(offset_x,40);
-        Move(Pointer(TITLEEND_MEM + (i shl 4) + i), Pointer(TITLEBACK_MEM + offset_x + offset_y + 43 ), 17);
+        Move(Pointer(TITLEEND_MEM + (i shl 4) + i), Pointer(TITLEBACK_MEM + offset_x + offset_y + 10), 17);
         // Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(TITLEBACK_MEM + offset_x + offset_y + 44), 4);
     end;
 
