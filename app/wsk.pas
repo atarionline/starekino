@@ -13,7 +13,7 @@ var
     msx : TRMT;
     old_vbl,old_dli : Pointer;
     i : byte;
-    frame : byte;
+    frame, guyframe : byte;
     offset_x : Word;
     offset_y : Word;
     gamestatus : Byte = 0;
@@ -160,8 +160,16 @@ begin
         Move(Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), Pointer(GUYBACK_MEM + (i shl 2)), 4);
         if f = 1 then
             Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
+        if f = 2 then
+            Move(Pointer(GUY2_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);    
         if f = 3 then
             Move(Pointer(GUY3_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
+        if f = 4 then
+            Move(Pointer(GUY4_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
+        if f = 5 then
+            Move(Pointer(GUY5_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
+        if f = 6 then
+            Move(Pointer(GUY6_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
         
     end;
 end;
@@ -227,6 +235,7 @@ begin
     // mask to read only 4 youngest bits
     case joy_1 and 15 of
         joy_left:   begin
+                        guyframe:=4;
                         if (hpos > 0) then begin
                             Inc(bike_px0); Inc(bike_px1);
                             Inc(bat_px0); Inc(bat_px1);
@@ -236,9 +245,12 @@ begin
                         if guy_x > 4 then begin
                             Dec(guy_x);
                         end;
-                        Guy_Anim(3);
+                        Guy_Anim(guyframe);
+                        Inc(guyframe);
+                        if guyframe = 7 then guyframe:=4;
                     end;
         joy_right:  begin
+                        guyframe:=1;
                         if (hpos < 339) then begin
                             Dec(bike_px0); Dec(bike_px1);
                             Dec(bat_px0); Dec(bat_px1);
@@ -248,9 +260,12 @@ begin
                         if guy_x < 128 then begin
                             Inc(guy_x);
                         end;
-                        Guy_Anim(1);
+                        Guy_Anim(guyframe);
+                        Inc(guyframe);
+                        if guyframe = 4 then guyframe:=1;
                     end;
     end;
+
 end;
 
 
@@ -269,10 +284,11 @@ begin
     guy_oldx:= guy_x;
     guy_oldy:= guy_y;
     
+    guyframe:=1;
     waitframe;
 
     Guy_BackGet;
-    Guy_Anim(1);
+    Guy_Anim(guyframe);
 
     i:=1;
     repeat
@@ -313,9 +329,7 @@ begin
     for i:=0 to 82 do
     begin
         Inc(offset_x,40);
-        // Move(Pointer(TITLE_MEM + (i shl 4) + i), Pointer(TITLEBACK_MEM + offset_x + offset_y + 50 ), 17);
         Move(Pointer(TITLE_MEM + (i shl 4) + i), Pointer(TITLEBACK_MEM + offset_x + offset_y + 10), 17);
-
         // Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(TITLEBACK_MEM + offset_x + offset_y + 44), 4);
     end;
 
