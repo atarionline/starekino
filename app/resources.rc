@@ -36,12 +36,13 @@ BACKGROUND_MEM rcdata 'assets/tlo4.gr8'
 TITLEBACK_MEM rcdata 'assets/plansza_pusta3.gr8'
 TITLE_MEM rcdata 'assets/plansza_title.gr8'
 TITLEEND_MEM rcdata 'assets/plansza_koniec.gr8'
-GUY1_MEM rcdata 'assets/ludzik1.gr8'
-GUY2_MEM rcdata 'assets/ludzik2.gr8'
-GUY3_MEM rcdata 'assets/ludzik3.gr8'
-GUY4_MEM rcdata 'assets/ludzik4.gr8'
-GUY5_MEM rcdata 'assets/ludzik5.gr8'
-GUY6_MEM rcdata 'assets/ludzik6.gr8'
+
+GUY1_MEM rcdata 'assets/ludzik6_1.gr8'
+GUY2_MEM rcdata 'assets/ludzik6_2.gr8'
+GUY3_MEM rcdata 'assets/ludzik6_3.gr8'
+GUY4_MEM rcdata 'assets/ludzik6_4.gr8'
+GUY5_MEM rcdata 'assets/ludzik6_5.gr8'
+GUY6_MEM rcdata 'assets/ludzik6_6.gr8'
 
 
 ; rmt module

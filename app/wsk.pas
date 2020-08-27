@@ -16,7 +16,7 @@ var
     frame, guyframe : byte;
     offset_x : Word;
     offset_y : Word;
-    gamestatus : Byte = 0;
+    gamestatus : Byte = 1;
     tab: array [0..127] of byte; 
 
 
