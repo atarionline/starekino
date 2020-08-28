@@ -98,27 +98,37 @@ begin
     msx.play;
 end;
 
-procedure vbl_title; assembler; interrupt;
-asm
-{
-	mva #1 dli_title.cnt
+procedure vbl_title; interrupt;
+begin
+    asm {
+        phr ; store registers
 
-	mva adr.fntTable chbase
-	mva adr.fntTable+1 dli_title.chbs
+        mva #1 dli_title.cnt
 
-	mva adr.c0Table colpf0
-	mva adr.c0Table+1 dli_title.col0
-	mva adr.c1Table colpf1
-	mva adr.c1Table+1 dli_title.col1
-	mva adr.c2Table colpf2
-	mva adr.c2Table+1 dli_title.col2
-	mva adr.c3Table colpf3
-	mva adr.c3Table+1 dli_title.col3
+        mva adr.fntTable chbase
+        mva adr.fntTable+1 dli_title.chbs
 
-	mva #$00 colbak
+        mva adr.c0Table colpf0
+        mva adr.c0Table+1 dli_title.col0
+        mva adr.c1Table colpf1
+        mva adr.c1Table+1 dli_title.col1
+        mva adr.c2Table colpf2
+        mva adr.c2Table+1 dli_title.col2
+        mva adr.c3Table colpf3
+        mva adr.c3Table+1 dli_title.col3
 
-	jmp xitvbv
-};
+        mva #$00 colbak
+        lda music 
+        beq @+
+        
+        lda MSX
+        ldy MSX+1
+        jsr RMT.TRMT.PLAY
+@
+        plr ; restore registers
+        rti
+    };
+    msx.play;
 end;
 
 
