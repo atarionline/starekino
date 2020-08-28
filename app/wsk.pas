@@ -1,12 +1,18 @@
 program wsk;
 {$librarypath '../../blibs/'}
 {$librarypath '../../MADS/blibs/'}
-uses atari, rmt, b_system, b_crt, b_pmg;
+uses atari, rmt, b_system, b_crt;
 
 const
 {$i const.inc}
 {$r resources.rc}
-
+dlist_title: array [0..34] of byte = (
+		$70,$70,$70,$70,$70,$70,$70,$C2,lo(TITLEBACK_MEM),hi(TITLEBACK_MEM),
+		$82,$82,$82,$82,$82,$82,$82,$82,
+		$82,$82,$82,$82,$82,$82,$82,$00,
+		$00,$00,$00,$00,$00,$00,
+		$41,lo(word(@dlist_title)),hi(word(@dlist_title))
+	);
 var
     hpos : word;
     music : boolean;
@@ -16,7 +22,7 @@ var
     frame, guyframe : byte;
     offset_x : Word;
     offset_y : Word;
-    gamestatus : Byte = 1;
+    gamestatus : Byte = 0;
     tab: array [0..127] of byte; 
 
 
@@ -99,6 +105,45 @@ var
 
     guy_x : byte = 10; guy_y : byte = 57;
     guy_oldx : byte; guy_oldy : byte;
+
+
+
+	fntTable: array [0..29] of byte = (
+		hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),
+		hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),
+		hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),
+		hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT)
+	);
+
+	c0Table: array [0..29] of byte = (
+		$0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E,
+		$0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E,
+		$0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E,
+		$0E,$0E,$0E,$0E,$0E,$0E
+	);
+
+	c1Table: array [0..29] of byte = (
+		$0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E,
+		$0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E,
+		$0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E,
+		$0E,$0E,$0E,$0E,$0E,$0E
+	);
+
+	c2Table: array [0..29] of byte = (
+		$00,$00,$00,$00,$00,$00,$00,$00,
+		$00,$00,$00,$00,$00,$00,$00,$00,
+		$00,$00,$00,$00,$00,$00,$00,$00,
+		$00,$00,$00,$00,$00,$00
+	);
+
+	c3Table: array [0..29] of byte = (
+		$00,$00,$00,$00,$00,$00,$00,$00,
+		$00,$00,$00,$00,$00,$00,$00,$00,
+		$00,$00,$00,$00,$00,$00,$00,$00,
+		$00,$00,$00,$00,$00,$00
+	);
+
+
 
 {$i interrupts.inc}
 
@@ -272,7 +317,9 @@ end;
 
 procedure startgame;
 begin
+    EnableVBLI(@vbl);
     EnableDLI(@dli1);
+
     DLISTL := DISPLAY_LIST_ADDRESS;
 
     colbk:=$c;
@@ -321,23 +368,22 @@ end;
 
 procedure title;
 begin
-    DisableDLI;
-    DLISTL := TITLE_LIST_ADDRESS;
+    SetCharset (Hi(CHARSET_FONT)); // when system is off
+    CRT_Init(TITLEBACK_MEM);
 
-    offset_x:=0;
-    offset_y:=(50 shl 4) + 1;
-    for i:=0 to 82 do
-    begin
-        Inc(offset_x,40);
-        Move(Pointer(TITLE_MEM + (i shl 4) + i), Pointer(TITLEBACK_MEM + offset_x + offset_y + 10), 17);
-        // Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(TITLEBACK_MEM + offset_x + offset_y + 44), 4);
-    end;
+    Move(Pointer(TITLE1_SCREEN), Pointer(TITLEBACK_MEM),$280);
+    
+    // DLISTL := TITLE_LIST_ADDRESS;
+    DLISTL:=Word(@dlist_title);
 
+    EnableVBLI(@vbl_title);
+    EnableDLI(@dli_title);
+    // nmien := $c0;	
 
-    colbk:=$0;
-    colpf1:=$0;
-    colpf2:=$c;
-    colpf3:=$c;
+    // colbk:=$0;
+    // colpf1:=$0;
+    // colpf2:=$c;
+    // colpf3:=$c;
 
     repeat
 
@@ -348,18 +394,17 @@ end;
 
 procedure endgame;
 begin
-    DisableDLI;
     DLISTL := TITLE_LIST_ADDRESS;
 
-    offset_x:=0;
-    // offset_y:=20 shl 5 + 8;
-    offset_y:=(50 shl 4) + 1;
-    for i:=0 to 82 do
-    begin
-        Inc(offset_x,40);
-        Move(Pointer(TITLEEND_MEM + (i shl 4) + i), Pointer(TITLEBACK_MEM + offset_x + offset_y + 10), 17);
-        // Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(TITLEBACK_MEM + offset_x + offset_y + 44), 4);
-    end;
+    // offset_x:=0;
+    // // offset_y:=20 shl 5 + 8;
+    // offset_y:=(50 shl 4) + 1;
+    // for i:=0 to 82 do
+    // begin
+    //     Inc(offset_x,40);
+    //     Move(Pointer(TITLEEND_MEM + (i shl 4) + i), Pointer(TITLEBACK_MEM + offset_x + offset_y + 10), 17);
+    //     // Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(TITLEBACK_MEM + offset_x + offset_y + 44), 4);
+    // end;
 
 
 
@@ -384,7 +429,7 @@ begin
     msx.Init(0);
 
     WaitFrame;
-    EnableVBLI(@vbl);
+
 
 
     gractl:=3; // Turn on P/M graphics
@@ -428,7 +473,7 @@ begin
         case gamestatus of
             0: title;
             1: startgame;
-            2: endgame;
+            // 2: endgame;
         end;
     until false;
     

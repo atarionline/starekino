@@ -39,17 +39,8 @@ DL_JVB = %01000001; // Jump to begining
 
 ; example (BASIC mode 0 + display list interrupt at top):
 dl_start
-  dta $70, $70, $70, $70, $70, $70, $4f, a(TITLEBACK_MEM), $0f, $0f
-  dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
-  dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
-  dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
-  dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
-  dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $4f, a(TITLEBACK_MEM + 51 * 40)
-  dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
-  dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
-  dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
-  dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
-  dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
-  dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
-  dta $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f, $0f
-  dta $0f, $0f, $0f, $0f, $0f, $0f, $41, a(dl_start)
+  dta $70, $70, $70, $70, $70, $70, $c2, a(TITLEBACK_MEM), $82, $82
+  dta $82, $82, $82, $82, $82, $82, $82, $82, $82, $82
+  dta $82, $82, $82, $82, $82, $82, $82, $82, $82, $82
+  dta $41, a(dl_start)
+
