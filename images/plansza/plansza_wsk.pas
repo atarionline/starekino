@@ -1,4 +1,5 @@
-uses crt,atari;
+{$librarypath '../../../MADS/blibs/'}
+uses crt,atari,b_system;
 
 {$r plansza_wsk.rc}
 
@@ -7,6 +8,7 @@ const
 
 	fnt0 = $B400;
 	fnt1 = $B800;
+	fnt255 = $B800;
 
 	dlist: array [0..34] of byte = (
 		$C2,lo(scr),hi(scr),
@@ -59,6 +61,7 @@ var
 procedure vbl; assembler; interrupt;
 asm
 {
+	phr ; store registers
 	mva #1 dli.cnt
 
 	mva adr.fntTable chbase
@@ -74,8 +77,9 @@ asm
 	mva adr.c3Table+1 dli.col3
 
 	mva #$00 colbak
+    plr ; restore registers
 
-	jmp xitvbv
+	;jmp xitvbv
 };
 end;
 
@@ -83,6 +87,7 @@ end;
 procedure dli; assembler; interrupt;
 asm
 {
+	phr ; store registers
 	sta rA
 	stx rX
 	sty rY
@@ -134,21 +139,28 @@ rA	equ *-1
 rX	equ *-1
 	ldy #0
 rY	equ *-1
+    plr ; restore registers
 };
 	end;
 
 
 begin
+ SystemOff;
+//  GetIntVec(iVBL, old_vbl);
+//  GetIntVec(iDLI, old_dli);
 
- GetIntVec(iVBL, old_vbl);
- GetIntVec(iDLI, old_dli);
+//  sdmctl := byte(normal or enable or missiles or players or oneline);
+//  sdlstl := word(@dlist);	// ($230) = @dlist, New DLIST Program
 
- sdmctl := byte(normal or enable or missiles or players or oneline);
- sdlstl := word(@dlist);	// ($230) = @dlist, New DLIST Program
+//  SetIntVec(iVBL, @vbl);
+//  SetIntVec(iDLI, @dli);
 
- SetIntVec(iVBL, @vbl);
- SetIntVec(iDLI, @dli);
 
+	DMACTL := byte(normal or enable or missiles or players or oneline);
+	DLISTL := word(@dlist);	// ($230) = @dlist, New DLIST Program
+
+    EnableVBLI(@vbl);
+    EnableDLI(@dli);
  nmien := $c0;			// $D40E = $C0, Enable DLI
 
  repeat
