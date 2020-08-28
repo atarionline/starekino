@@ -21,11 +21,16 @@ GUY4_MEM = GUY3_MEM + $104;
 GUY5_MEM = GUY4_MEM + $104;
 GUY6_MEM = GUY5_MEM + $104;
 
-TITLEBACK_MEM = $B808;
-TITLE_MEM = $D800;
-TITLEEND_MEM = TITLE_MEM + $583;
-// ;*** and here goes all other stuff
+TITLEBACK_MEM = $B800;
+TITLE1_SCREEN = TITLEBACK_MEM + $3E8;
 
+TITLE1_FONT1 = $C000;
+TITLE1_FONT2 = TITLE1_FONT1 + $400;
+CHARSET_FONT = TITLE1_FONT2 + $400;
+
+
+
+// ;*** and here goes all other stuff
 NONE = $ff;
 
 // sprite size
