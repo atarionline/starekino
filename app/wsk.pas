@@ -1,20 +1,30 @@
 program wsk;
 {$librarypath '../../blibs/'}
 {$librarypath '../../MADS/blibs/'}
-uses atari, rmt, b_system, b_crt, b_pmg;
+uses atari, rmt, b_system, b_crt;
 
 const
 {$i const.inc}
 {$r resources.rc}
-
+dlist_title: array [0..34] of byte = (
+		$70,$70,$70,$70,$70,$70,$70,$C2,lo(TITLEBACK_MEM),hi(TITLEBACK_MEM),
+		$82,$82,$82,$82,$82,$82,$82,$82,
+		$82,$82,$82,$82,$82,$82,$82,$00,
+		$00,$00,$00,$00,$00,$00,
+		$41,lo(word(@dlist_title)),hi(word(@dlist_title))
+	);
 var
     hpos : word;
     music : boolean;
     msx : TRMT;
     old_vbl,old_dli : Pointer;
     i : byte;
-    d : shortint;
-    frame : byte;
+    frame, guyframe : byte;
+    offset_x : Word;
+    offset_y : Word;
+    gamestatus : Byte = 2;
+    tab: array [0..127] of byte; 
+
 
     pcolr : array[0..3] of byte absolute $D012;   // Player color
     hposp : array[0..3] of byte absolute $D000;  // Player horizontal position
@@ -93,7 +103,48 @@ var
     sreel_px0 : byte = 100; sreel_py0 : byte = 71;
     sreel_px1 : byte = 107; sreel_py1 : byte = 71;
 
-    guy_x : byte = 100; guy_y : byte = 80;
+    guy_x : byte = 10; guy_y : byte = 57;
+    guy_oldx : byte; guy_oldy : byte;
+
+
+
+	fntTable: array [0..29] of byte;
+    //  = (
+	// 	hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),
+	// 	hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT2),hi(TITLE1_FONT2),hi(TITLE1_FONT2),hi(TITLE1_FONT2),hi(TITLE1_FONT1),hi(TITLE1_FONT1),
+	// 	hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),
+	// 	hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT)
+	// );
+
+	c0Table: array [0..29] of byte = (
+		$0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E,
+		$0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E,
+		$0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E,
+		$0E,$0E,$0E,$0E,$0E,$0E
+	);
+
+	c1Table: array [0..29] of byte = (
+		$0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E,
+		$0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E,
+		$0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E,
+		$0E,$0E,$0E,$0E,$0E,$0E
+	);
+
+	c2Table: array [0..29] of byte = (
+		$00,$00,$00,$00,$00,$00,$00,$00,
+		$00,$00,$00,$00,$00,$00,$00,$00,
+		$00,$00,$00,$00,$00,$00,$00,$00,
+		$00,$00,$00,$00,$00,$00
+	);
+
+	c3Table: array [0..29] of byte = (
+		$00,$00,$00,$00,$00,$00,$00,$00,
+		$00,$00,$00,$00,$00,$00,$00,$00,
+		$00,$00,$00,$00,$00,$00,$00,$00,
+		$00,$00,$00,$00,$00,$00
+	);
+
+
 
 {$i interrupts.inc}
 
@@ -115,20 +166,77 @@ begin
     hscrol := (x and 3) xor 3;
 end;
 
+// procedure Guy_BackSet;
+// // Set remembered back into background 
+// begin
+//     offset_x:=0;
+//     offset_y:=guy_oldy shl 7;
+//     for i:=0 to _GUY_HEIGHT - 1 do
+//     begin
+//         Inc(offset_x,128);
+//         Move(Pointer(GUYBACK_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_oldx), 4);
+//     end;
+// end;
+
+procedure Guy_BackGet;
+// Get backgrount into memory
+begin
+    offset_x:=0;
+    offset_y:=guy_y shl 7;
+    for i:=0 to _GUY_HEIGHT - 1 do
+    begin
+        Inc(offset_x,128);
+        Move(Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), Pointer(GUYBACK_MEM + (i shl 2)), 4);
+    end;
+end;
+
+procedure Guy_Anim(f : byte);
+begin
+    // Guy_BackSet;
+    // Guy_BackGet;
+
+
+    offset_x:=0;
+    offset_y:=guy_y shl 7;
+    for i:=0 to _GUY_HEIGHT - 1 do
+    begin
+        Inc(offset_x,128);
+
+        Move(Pointer(GUYBACK_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_oldx), 4);
+        Move(Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), Pointer(GUYBACK_MEM + (i shl 2)), 4);
+        if f = 1 then
+            Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
+        if f = 2 then
+            Move(Pointer(GUY2_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);    
+        if f = 3 then
+            Move(Pointer(GUY3_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
+        if f = 4 then
+            Move(Pointer(GUY4_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
+        if f = 5 then
+            Move(Pointer(GUY5_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
+        if f = 6 then
+            Move(Pointer(GUY6_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
+        
+    end;
+end;
+
 procedure NextFrame;
 begin
   if frame = 1 then begin
-    // bike
-    Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
-    Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
+    (* bike
+        + 512 + (128 * 0) player0
+        + 512 + (128 * 1) player1
+    *)
+    Move(bike_p0, Pointer(PMGBASE + 512 + bike_py0), _HEIGHT);
+    Move(bike_p1, Pointer(PMGBASE + 512 + 128 + bike_py1), _HEIGHT);
 
     // bat
-    Move(bat_p0Frame1, Pointer(PMGBASE + 512 + (128 * 0) + bat_py0 + bat_pos[i]), _HEIGHT);
-    Move(bat_p1Frame1, Pointer(PMGBASE + 512 + (128 * 1) + bat_py1 + bat_pos[i]), _HEIGHT);
+    Move(bat_p0Frame1, Pointer(PMGBASE + 512 + bat_py0 + bat_pos[i]), _HEIGHT);
+    Move(bat_p1Frame1, Pointer(PMGBASE + 512 + 128 + bat_py1 + bat_pos[i]), _HEIGHT);
 
     // small reel
-    Move(sreel_p0Frame1, Pointer(PMGBASE + 512 + (128 * 0) + sreel_py0 - sreel_pos[i]), _HEIGHT);
-    Move(sreel_p1Frame1, Pointer(PMGBASE + 512 + (128 * 1) + sreel_py1 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p0Frame1, Pointer(PMGBASE + 512 + sreel_py0 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p1Frame1, Pointer(PMGBASE + 512 + 128 + sreel_py1 - sreel_pos[i]), _HEIGHT);
   end
   else if frame = 2 then begin
     //bike
@@ -136,69 +244,189 @@ begin
     // Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
 
     // bat
-    Move(bat_p0Frame2, Pointer(PMGBASE + 512 + (128 * 0) + bat_py0 + bat_pos[i]), _HEIGHT);
-    Move(bat_p1Frame2, Pointer(PMGBASE + 512 + (128 * 1) + bat_py1 + bat_pos[i]), _HEIGHT);
+    Move(bat_p0Frame2, Pointer(PMGBASE + 512 + bat_py0 + bat_pos[i]), _HEIGHT);
+    Move(bat_p1Frame2, Pointer(PMGBASE + 512 + 128 + bat_py1 + bat_pos[i]), _HEIGHT);
 
     //small reel
-    Move(sreel_p0Frame2, Pointer(PMGBASE + 512 + (128 * 0) + sreel_py0 - sreel_pos[i]), _HEIGHT);
-    Move(sreel_p1Frame2, Pointer(PMGBASE + 512 + (128 * 1) + sreel_py1 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p0Frame2, Pointer(PMGBASE + 512 + sreel_py0 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p1Frame2, Pointer(PMGBASE + 512 + 128 + sreel_py1 - sreel_pos[i]), _HEIGHT);
   end
   else if frame = 3 then begin
     // Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
     // Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
 
-    Move(bat_p0Frame3, Pointer(PMGBASE + 512 + (128 * 0) + bat_py0 + bat_pos[i]), _HEIGHT);
-    Move(bat_p1Frame3, Pointer(PMGBASE + 512 + (128 * 1) + bat_py1 + bat_pos[i]), _HEIGHT);
+    Move(bat_p0Frame3, Pointer(PMGBASE + 512 + bat_py0 + bat_pos[i]), _HEIGHT);
+    Move(bat_p1Frame3, Pointer(PMGBASE + 512 + 128 + bat_py1 + bat_pos[i]), _HEIGHT);
 
-    Move(sreel_p0Frame3, Pointer(PMGBASE + 512 + (128 * 0) + sreel_py0 - sreel_pos[i]), _HEIGHT);
-    Move(sreel_p1Frame3, Pointer(PMGBASE + 512 + (128 * 1) + sreel_py1 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p0Frame3, Pointer(PMGBASE + 512 + sreel_py0 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p1Frame3, Pointer(PMGBASE + 512 + 128 + sreel_py1 - sreel_pos[i]), _HEIGHT);
   end
   else if frame = 4 then begin
     // Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
     // Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
 
-    Move(bat_p0Frame4, Pointer(PMGBASE + 512 + (128 * 0) + bat_py0 + bat_pos[i]), _HEIGHT);
-    Move(bat_p1Frame4, Pointer(PMGBASE + 512 + (128 * 1) + bat_py1 + bat_pos[i]), _HEIGHT);
+    Move(bat_p0Frame4, Pointer(PMGBASE + 512 + bat_py0 + bat_pos[i]), _HEIGHT);
+    Move(bat_p1Frame4, Pointer(PMGBASE + 512 + 128 + bat_py1 + bat_pos[i]), _HEIGHT);
 
-    Move(sreel_p0Frame4, Pointer(PMGBASE + 512 + (128 * 0) + sreel_py0 - sreel_pos[i]), _HEIGHT);
-    Move(sreel_p1Frame4, Pointer(PMGBASE + 512 + (128 * 1) + sreel_py1 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p0Frame4, Pointer(PMGBASE + 512 + sreel_py0 - sreel_pos[i]), _HEIGHT);
+    Move(sreel_p1Frame4, Pointer(PMGBASE + 512 + 128 + sreel_py1 - sreel_pos[i]), _HEIGHT);
   end;
 
 end;
 
 procedure Joystick_Move;
 begin
-
+    guy_oldx:=guy_x;
+    guy_oldy:=guy_y;
     // mask to read only 4 youngest bits
     case joy_1 and 15 of
         joy_left:   begin
-                        if hpos > 0 then begin
+                        guyframe:=4;
+                        if (hpos > 0) then begin
                             Inc(bike_px0); Inc(bike_px1);
                             Inc(bat_px0); Inc(bat_px1);
                             Inc(sreel_px0); Inc(sreel_px1);
                             dec(hpos);
                         end;
+                        if guy_x > 4 then begin
+                            Dec(guy_x);
+                        end;
+                        Guy_Anim(guyframe);
+                        Inc(guyframe);
+                        if guyframe = 7 then guyframe:=4;
                     end;
         joy_right:  begin
-                        if hpos < 339 then begin
+                        guyframe:=1;
+                        if (hpos < 339) then begin
                             Dec(bike_px0); Dec(bike_px1);
                             Dec(bat_px0); Dec(bat_px1);
                             Dec(sreel_px0); Dec(sreel_px1);
                             inc(hpos);
                         end;
+                        if guy_x < 128 then begin
+                            Inc(guy_x);
+                        end;
+                        Guy_Anim(guyframe);
+                        Inc(guyframe);
+                        if guyframe = 4 then guyframe:=1;
                     end;
     end;
+
 end;
 
-procedure Guy_Anim;
+
+
+procedure startgame;
 begin
-    for i:=0 to 31 do
-    begin
-        // Move(Pointer(GUY1_MEM + (4 * i)), Pointer(BACKGROUND_MEM + (128 * i  * guy_y) + guy_x), 4);
-        Move(Pointer(GUY1_MEM + (4 * i)), Pointer(BACKGROUND_MEM + (128 * i)), 4);
-    end
+    EnableVBLI(@vbl);
+    EnableDLI(@dli1);
+
+    DLISTL := DISPLAY_LIST_ADDRESS;
+
+    colbk:=$c;
+    colpf1:=$0;
+    colpf2:=$c;
+    colpf3:=$c;
+
+    // remember backgroud at start at initial player position 
+    guy_oldx:= guy_x;
+    guy_oldy:= guy_y;
+    
+    guyframe:=1;
+    waitframe;
+
+    Guy_BackGet;
+    Guy_Anim(guyframe);
+
+    i:=1;
+    repeat
+        Joystick_Move;
+
+        setBackgroundOffset(hpos);
+        
+        Nextframe;
+
+        // hposp[0]:=bike_px0;
+        // hposp[1]:=bike_px1;
+        // hposp[2]:=bat_px0;
+        // hposp[3]:=bat_px1;
+        
+        Dec(bike_px0); Dec(bike_px1);
+        Inc(bat_px0); Inc(bat_px1);
+        Dec(sreel_px0); Dec(sreel_px1);
+
+        if (vsc and 7) = 0 then Inc(frame);
+        // if (vsc and 2) = 0 then Guy_Anim;
+        if frame > 4 then frame := 1;
+        Inc(i);
+        if i = _SIZE then i:=1;
+    
+        if (strig0 = 0) then gamestatus:= 2;
+        waitframe;
+
+    until gamestatus <> 1;
 end;
 
+procedure title;
+begin
+    SetCharset (Hi(CHARSET_FONT)); // when system is off
+    CRT_Init(TITLEBACK_MEM);
+
+    Move(Pointer(TITLE1_SCREEN), Pointer(TITLEBACK_MEM),$280);
+    for i:=0 to 9 do
+        fntTable[i]:=hi(TITLE1_FONT1);
+    // end;
+    for i:=10 to 13 do
+        fntTable[i]:=hi(TITLE1_FONT2);
+    // end;
+    for i:=14 to 17 do
+        fntTable[i]:=hi(TITLE1_FONT1);
+    // end;
+    for i:=18 to 29 do
+        fntTable[i]:=hi(CHARSET_FONT);
+    // end;
+
+    // DLISTL := TITLE_LIST_ADDRESS;
+    DLISTL:=Word(@dlist_title);
+
+    EnableVBLI(@vbl_title);
+    EnableDLI(@dli_title);
+    // nmien := $c0;	
+
+
+
+    repeat
+
+       waitframe; 
+    until (strig0 = 0);
+    gamestatus:= 1;
+end;
+
+procedure endgame;
+begin
+    
+    
+    Move(Pointer(TITLE2_SCREEN), Pointer(TITLEBACK_MEM),$280);
+    for i:=0 to 17 do
+        fntTable[i]:=hi(TITLE2_FONT1);
+    // end;
+    for i:=18 to 29 do
+        fntTable[i]:=hi(CHARSET_FONT);
+    // end;
+
+    // DLISTL := TITLE_LIST_ADDRESS;
+    DLISTL:=Word(@dlist_title);
+
+    EnableVBLI(@vbl_title);
+    EnableDLI(@dli_title);
+    // nmien := $c0;	
+
+    repeat
+    
+       waitframe; 
+    until (strig0 = 0);
+    gamestatus:= 0;
+end;
 
 
 begin
@@ -209,16 +437,9 @@ begin
     msx.Init(0);
 
     WaitFrame;
-    EnableVBLI(@vbl);
-    EnableDLI(@dli1);
 
 
-    DLISTL := DISPLAY_LIST_ADDRESS;
 
-    colbk:=$c;
-    colpf1:=$0;
-    colpf2:=$c;
-    colpf3:=$c;
     gractl:=3; // Turn on P/M graphics
     pmbase:=Hi(PMGBASE);
 
@@ -227,7 +448,7 @@ begin
 
     // Clear player memory
     // FillByte(Pointer(PMGBASE + 384), 512 + 128, 0);
-    FillByte(Pointer(PMGBASE + 384), 512 + 128*3, 0);
+    FillByte(Pointer(PMGBASE + 384), 512 + 128, 0);
     // PMG_Clear;
 
 
@@ -253,59 +474,17 @@ begin
     // hposp[1] := bike_px1;
     // hposp[2] := bat_px0;
     // hposp[3] := bat_px1;
-
-    // Draw player 0 and set vertical position
-    // Move(bike_p0, Pointer(PMGBASE + 512 + (128 * 0) + bike_py0), _HEIGHT);
-    // Draw player 1 and set vertical position
-    // Move(bike_p1, Pointer(PMGBASE + 512 + (128 * 1) + bike_py1), _HEIGHT);
-
     
-    Guy_Anim;
-    
+    music:=true;
 
-    music:=false;
-
-    i:=1;
     repeat
-        Joystick_Move;
-        
-        setBackgroundOffset(hpos);
-        if strig0 = 0 then 
-        begin
-            msx.stop;
-            music:= not music;
+        case gamestatus of
+            0: title;
+            1: startgame;
+            2: endgame;
         end;
-
-        // for hpos:=0 to 339 do begin 
-        //     waitframe;
-        //     setBackgroundOffset(hpos);
-        // end;
-        // for hpos:=338 downto 1 do begin 
-        //     waitframe;
-        //     setBackgroundOffset(hpos);
-        // end;
-        
-        Nextframe;
-
-        // hposp[0]:=bike_px0;
-        // hposp[1]:=bike_px1;
-        // hposp[2]:=bat_px0;
-        // hposp[3]:=bat_px1;
-        
-        Dec(bike_px0); Dec(bike_px1);
-        Inc(bat_px0); Inc(bat_px1);
-        Dec(sreel_px0); Dec(sreel_px1);
-        // sreel_px0:=sreel_px0 + d; sreel_px1:=sreel_px1 + d;
-        // if (vsc mod 10) = 0 then Inc(frame);
-        if (vsc and 7) = 0 then Inc(frame);
-        if frame > 4 then frame := 1;
-        Inc(i);
-        if i = _SIZE then i:=1;
-     
-        waitframe;
-
     until false;
-
+    
     music:= false;
     msx.stop;
     // waitframe;

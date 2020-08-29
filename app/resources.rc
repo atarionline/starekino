@@ -24,16 +24,29 @@
 ;        from color index set as PAR0, in VBXE pallette nr 1
 ; 
 ; remove # to uncomment and use examples below:
-
-#CHARSET_ADDRESS rcdata 'font.fnt'
  
 DISPLAY_LIST_ADDRESS rcasm 'dlist.asm'
+; TITLE_LIST_ADDRESS rcasm 'dlist_title.asm'
 
 #STRINGS_ADDRESS rcasm 'strings.asm'
 
 BACKGROUND_MEM rcdata 'assets/tlo4.gr8'
-GUY1_MEM rcdata 'assets/ludzik1.gr8'
+
+TITLE1_SCREEN rcdata 'assets/plansza_wsk.scr'
+TITLE2_SCREEN rcdata 'assets/plansza_koniec.scr'
+
+CHARSET_FONT rcdata 'assets/wsk.fnt'
+TITLE1_FONT1 rcdata 'assets/plansza_wsk.fnt'
+TITLE2_FONT1 rcdata 'assets/plansza_koniec.fnt'
+
+GUY1_MEM rcdata 'assets/ludzik6_1.gr8'
+GUY2_MEM rcdata 'assets/ludzik6_2.gr8'
+GUY3_MEM rcdata 'assets/ludzik6_3.gr8'
+GUY4_MEM rcdata 'assets/ludzik6_4.gr8'
+GUY5_MEM rcdata 'assets/ludzik6_5.gr8'
+GUY6_MEM rcdata 'assets/ludzik6_6.gr8'
+
 
 ; rmt module
 RMT_PLAYER_ADDRESS RMTPLAY 'assets/rmt_feat.asm' 0
-RMT_MODULE_ADDRESS RMT 'assets/starekino3.rmt'
+RMT_MODULE_ADDRESS RMT 'assets/starekino4.rmt'
