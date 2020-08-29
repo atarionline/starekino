@@ -9,8 +9,8 @@ const
 dlist_title: array [0..34] of byte = (
 		$70,$70,$70,$70,$70,$70,$70,$C2,lo(TITLEBACK_MEM),hi(TITLEBACK_MEM),
 		$82,$82,$82,$82,$82,$82,$82,$82,
-		$82,$82,$82,$82,$82,$82,$82,$00,
-		$00,$00,$00,$00,$00,$00,
+		$82,$82,$82,$82,$82,$82,$82,$02,
+		$02,$02,$02,$02,$02,$00,
 		$41,lo(word(@dlist_title)),hi(word(@dlist_title))
 	);
 var
@@ -22,7 +22,7 @@ var
     frame, guyframe : byte;
     offset_x : Word;
     offset_y : Word;
-    gamestatus : Byte = 2;
+    gamestatus : Byte = 0;
     tab: array [0..127] of byte; 
 
 
@@ -109,12 +109,6 @@ var
 
 
 	fntTable: array [0..29] of byte;
-    //  = (
-	// 	hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),
-	// 	hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT2),hi(TITLE1_FONT2),hi(TITLE1_FONT2),hi(TITLE1_FONT2),hi(TITLE1_FONT1),hi(TITLE1_FONT1),
-	// 	hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),
-	// 	hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT)
-	// );
 
 	c0Table: array [0..29] of byte = (
 		$0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E,
@@ -369,8 +363,6 @@ end;
 
 procedure title;
 begin
-    SetCharset (Hi(CHARSET_FONT)); // when system is off
-    CRT_Init(TITLEBACK_MEM);
 
     Move(Pointer(TITLE1_SCREEN), Pointer(TITLEBACK_MEM),$280);
     for i:=0 to 9 do
@@ -379,10 +371,10 @@ begin
     for i:=10 to 13 do
         fntTable[i]:=hi(TITLE1_FONT2);
     // end;
-    for i:=14 to 17 do
+    for i:=14 to 15 do
         fntTable[i]:=hi(TITLE1_FONT1);
     // end;
-    for i:=18 to 29 do
+    for i:=16 to 29 do
         fntTable[i]:=hi(CHARSET_FONT);
     // end;
 
@@ -393,7 +385,7 @@ begin
     EnableDLI(@dli_title);
     // nmien := $c0;	
 
-
+    CRT_WriteCentered(17,' Wystepuja '~);
 
     repeat
 
@@ -437,7 +429,9 @@ begin
     msx.Init(0);
 
     WaitFrame;
-
+    SetCharset (Hi(CHARSET_FONT)); // when system is off
+    CRT_Init(TITLEBACK_MEM);
+    CRT_Clear;
 
 
     gractl:=3; // Turn on P/M graphics
