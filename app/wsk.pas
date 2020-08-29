@@ -22,7 +22,7 @@ var
     frame, guyframe : byte;
     offset_x : Word;
     offset_y : Word;
-    gamestatus : Byte = 0;
+    gamestatus : Byte = 2;
     tab: array [0..127] of byte; 
 
 
@@ -108,12 +108,13 @@ var
 
 
 
-	fntTable: array [0..29] of byte = (
-		hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),
-		hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT2),hi(TITLE1_FONT2),hi(TITLE1_FONT2),hi(TITLE1_FONT2),hi(TITLE1_FONT1),hi(TITLE1_FONT1),
-		hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),
-		hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT)
-	);
+	fntTable: array [0..29] of byte;
+    //  = (
+	// 	hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT1),
+	// 	hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(TITLE1_FONT2),hi(TITLE1_FONT2),hi(TITLE1_FONT2),hi(TITLE1_FONT2),hi(TITLE1_FONT1),hi(TITLE1_FONT1),
+	// 	hi(TITLE1_FONT1),hi(TITLE1_FONT1),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),
+	// 	hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT),hi(CHARSET_FONT)
+	// );
 
 	c0Table: array [0..29] of byte = (
 		$0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E,
@@ -372,7 +373,19 @@ begin
     CRT_Init(TITLEBACK_MEM);
 
     Move(Pointer(TITLE1_SCREEN), Pointer(TITLEBACK_MEM),$280);
-    
+    for i:=0 to 9 do
+        fntTable[i]:=hi(TITLE1_FONT1);
+    // end;
+    for i:=10 to 13 do
+        fntTable[i]:=hi(TITLE1_FONT2);
+    // end;
+    for i:=14 to 17 do
+        fntTable[i]:=hi(TITLE1_FONT1);
+    // end;
+    for i:=18 to 29 do
+        fntTable[i]:=hi(CHARSET_FONT);
+    // end;
+
     // DLISTL := TITLE_LIST_ADDRESS;
     DLISTL:=Word(@dlist_title);
 
@@ -380,10 +393,7 @@ begin
     EnableDLI(@dli_title);
     // nmien := $c0;	
 
-    // colbk:=$0;
-    // colpf1:=$0;
-    // colpf2:=$c;
-    // colpf3:=$c;
+
 
     repeat
 
@@ -394,24 +404,22 @@ end;
 
 procedure endgame;
 begin
-    DLISTL := TITLE_LIST_ADDRESS;
-
-    // offset_x:=0;
-    // // offset_y:=20 shl 5 + 8;
-    // offset_y:=(50 shl 4) + 1;
-    // for i:=0 to 82 do
-    // begin
-    //     Inc(offset_x,40);
-    //     Move(Pointer(TITLEEND_MEM + (i shl 4) + i), Pointer(TITLEBACK_MEM + offset_x + offset_y + 10), 17);
-    //     // Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(TITLEBACK_MEM + offset_x + offset_y + 44), 4);
+    
+    
+    Move(Pointer(TITLE2_SCREEN), Pointer(TITLEBACK_MEM),$280);
+    for i:=0 to 17 do
+        fntTable[i]:=hi(TITLE2_FONT1);
+    // end;
+    for i:=18 to 29 do
+        fntTable[i]:=hi(CHARSET_FONT);
     // end;
 
+    // DLISTL := TITLE_LIST_ADDRESS;
+    DLISTL:=Word(@dlist_title);
 
-
-    colbk:=$0;
-    colpf1:=$0;
-    colpf2:=$c;
-    colpf3:=$c;
+    EnableVBLI(@vbl_title);
+    EnableDLI(@dli_title);
+    // nmien := $c0;	
 
     repeat
     
@@ -473,7 +481,7 @@ begin
         case gamestatus of
             0: title;
             1: startgame;
-            // 2: endgame;
+            2: endgame;
         end;
     until false;
     

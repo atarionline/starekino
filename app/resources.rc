@@ -33,8 +33,11 @@ DISPLAY_LIST_ADDRESS rcasm 'dlist.asm'
 BACKGROUND_MEM rcdata 'assets/tlo4.gr8'
 
 TITLE1_SCREEN rcdata 'assets/plansza_wsk.scr'
+TITLE2_SCREEN rcdata 'assets/plansza_koniec.scr'
+
 CHARSET_FONT rcdata 'assets/wsk.fnt'
 TITLE1_FONT1 rcdata 'assets/plansza_wsk.fnt'
+TITLE2_FONT1 rcdata 'assets/plansza_koniec.fnt'
 
 GUY1_MEM rcdata 'assets/ludzik6_1.gr8'
 GUY2_MEM rcdata 'assets/ludzik6_2.gr8'
