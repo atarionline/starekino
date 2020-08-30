@@ -280,6 +280,7 @@ begin
                             Inc(bike_px0); Inc(bike_px1);
                             Inc(bat_px0); Inc(bat_px1);
                             Inc(sreel_px0); Inc(sreel_px1);
+                            // Inc(i);
                             dec(hpos);
                         end;
                         if guy_x > 4 then begin
@@ -296,6 +297,7 @@ begin
                             Dec(bat_px0); Dec(bat_px1);
                             Dec(sreel_px0); Dec(sreel_px1);
                             inc(hpos);
+                            // Inc(i);
                         end;
                         if guy_x < 128 then begin
                             Inc(guy_x);
@@ -397,12 +399,13 @@ end;
 procedure endgame;
 begin
     
-    
+    CRT_Clear;
     Move(Pointer(TITLE2_SCREEN), Pointer(TITLEBACK_MEM),$280);
-    for i:=0 to 17 do
+    
+    for i:=0 to 15 do
         fntTable[i]:=hi(TITLE2_FONT1);
     // end;
-    for i:=18 to 29 do
+    for i:=16 to 29 do
         fntTable[i]:=hi(CHARSET_FONT);
     // end;
 

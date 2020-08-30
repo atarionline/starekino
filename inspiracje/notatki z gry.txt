@@ -37,19 +37,21 @@ Kazdy wykorzystany sprite powinien miec puste linie z gory i dolu by automatyczn
     Player0 - Lewa strona, szerokosc 8 pikseli
     Player1 - Prawa strona szerokosc 8 pikseli
     Rower porusza sie w poziomie z prawej do lewej.
+    
 2 Nietoperz
     8 pustych linnii z gory i dolu sprite do maskowania ruchu skoku
-    Player2 - Lewa strona, szerokosc 8 pikseli
-    Player3 - Prawa strona szerokosc 8 pikseli
+    Player0 - Lewa strona, szerokosc 8 pikseli
+    Player1 - Prawa strona szerokosc 8 pikseli
     Wysokosc 16 pikseli
     Nietoperz bedzie poruszal sie z lewej do prawej oraz z prawej do lewej. Dodatkowo bedzie obnizal i zwiekszal swoj lot.
 
 3 Rolka filmu
     8 pustych linnii z gory i dolu sprite do maskowania ruchu skoku
-    Player2 - Lewa strona, szerokosc 8 pikseli
-    Player3 - Prawa strona szerokosc 8 pikseli
+    Player0 - Lewa strona, szerokosc 8 pikseli
+    Player1 - Prawa strona szerokosc 8 pikseli
     Wysokosc 16 pikseli
     Rolka porusza sie z prawej do lewej według fali gasnącej. Imituje to podskakiwanie rolki na drodze.
+    Niezaimplementowana
 
 4 Mała rolka
     8 pustych linnii z gory i dolu sprite do maskowania ruchu skoku
