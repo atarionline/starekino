@@ -7,3 +7,7 @@ type Tplayer = record
    score: cardinal; 
 end;
 *)
+
+type dirs = (right = 0, left = 1);
+
+

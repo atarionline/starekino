@@ -4,8 +4,11 @@ program wsk;
 uses atari, rmt, b_system, b_crt;
 
 const
+
 {$i const.inc}
+{$i types.inc}
 {$r resources.rc}
+const 
 dlist_title: array [0..34] of byte = (
 		$70,$70,$70,$70,$70,$70,$70,$C2,lo(TITLEBACK_MEM),hi(TITLEBACK_MEM),
 		$82,$82,$82,$82,$82,$82,$82,$82,
@@ -19,9 +22,7 @@ var
     msx : TRMT;
     old_vbl,old_dli : Pointer;
     i : byte;
-    frame, guyframe : byte;
-    offset_x : Word;
-    offset_y : Word;
+    frame: byte;
     gamestatus : Byte = 0;
     tab: array [0..127] of byte; 
 
@@ -103,9 +104,15 @@ var
     sreel_px0 : byte = 100; sreel_py0 : byte = 71;
     sreel_px1 : byte = 107; sreel_py1 : byte = 71;
 
-    guy_x : byte = 10; guy_y : byte = 57;
+    guy_x : byte = 10; guy_y : byte = 67;
     guy_oldx : byte; guy_oldy : byte;
+    guy_frame: byte;
+    guy_dir: dirs;
 
+    guy_frames: array [0..1,0..3] of word = (
+        (GUY1_MEM, GUY2_MEM, GUY3_MEM, GUY2_MEM),
+        (GUY4_MEM, GUY5_MEM, GUY6_MEM, GUY5_MEM)
+    );
 
 
 	fntTable: array [0..29] of byte;
@@ -172,45 +179,48 @@ end;
 //     end;
 // end;
 
-procedure Guy_BackGet;
+procedure GetGuyBackground;
 // Get backgrount into memory
+var  bg_src:word;
 begin
-    offset_x:=0;
-    offset_y:=guy_y shl 7;
+    bg_src := BACKGROUND_MEM + (guy_y shl 7) + guy_x;
     for i:=0 to _GUY_HEIGHT - 1 do
     begin
-        Inc(offset_x,128);
-        Move(Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), Pointer(GUYBACK_MEM + (i shl 2)), 4);
+        Move(Pointer(bg_src), Pointer(GUYBACK_MEM + (i shl 2)), 4);
+        Inc(bg_src,128);
     end;
 end;
 
-procedure Guy_Anim(f : byte);
+procedure DrawGuy;
+var tile_addr,buff_addr:word;
+    guy_dest:word;
+    bg_dest:word;
+    offset_y:word;
 begin
-    // Guy_BackSet;
-    // Guy_BackGet;
 
-
-    offset_x:=0;
-    offset_y:=guy_y shl 7;
+    tile_addr := guy_frames[guy_dir, guy_frame];
+    buff_addr := GUYBACK_MEM;
+    offset_y := BACKGROUND_MEM + (guy_y shl 7);
+    bg_dest := offset_y + guy_oldx;
+    guy_dest := offset_y + guy_x;
+    
     for i:=0 to _GUY_HEIGHT - 1 do
     begin
-        Inc(offset_x,128);
-
-        Move(Pointer(GUYBACK_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_oldx), 4);
-        Move(Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), Pointer(GUYBACK_MEM + (i shl 2)), 4);
-        if f = 1 then
-            Move(Pointer(GUY1_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
-        if f = 2 then
-            Move(Pointer(GUY2_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);    
-        if f = 3 then
-            Move(Pointer(GUY3_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
-        if f = 4 then
-            Move(Pointer(GUY4_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
-        if f = 5 then
-            Move(Pointer(GUY5_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
-        if f = 6 then
-            Move(Pointer(GUY6_MEM + (i shl 2)), Pointer(BACKGROUND_MEM + offset_x + offset_y + guy_x), 4);
+      
+        if guy_x <> guy_oldx then begin
+            Move(Pointer(buff_addr), Pointer(bg_dest), 4);
+            Move(Pointer(guy_dest), Pointer(buff_addr), 4);
+        end;
         
+        Poke(guy_dest    , peek(tile_addr    ) or peek(buff_addr    ));
+        Poke(guy_dest + 1, peek(tile_addr + 1) or peek(buff_addr + 1));
+        Poke(guy_dest + 2, peek(tile_addr + 2) or peek(buff_addr + 2));
+        Poke(guy_dest + 3, peek(tile_addr + 3) or peek(buff_addr + 3));
+
+        Inc(guy_dest,128);
+        Inc(bg_dest,128);
+        Inc(tile_addr,4);
+        Inc(buff_addr,4);
     end;
 end;
 
@@ -270,12 +280,15 @@ end;
 
 procedure Joystick_Move;
 begin
-    guy_oldx:=guy_x;
-    guy_oldy:=guy_y;
     // mask to read only 4 youngest bits
+    guy_oldx:=guy_x;
     case joy_1 and 15 of
         joy_left:   begin
-                        guyframe:=4;
+                        guy_dir := left;
+                        guy_frame := (guy_frame - 1) and 3;
+                        if guy_frame = 3 then begin
+                            Dec(guy_x);
+                        end;
                         if (hpos > 0) then begin
                             Inc(bike_px0); Inc(bike_px1);
                             Inc(bat_px0); Inc(bat_px1);
@@ -283,15 +296,15 @@ begin
                             // Inc(i);
                             dec(hpos);
                         end;
-                        if guy_x > 4 then begin
-                            Dec(guy_x);
-                        end;
-                        Guy_Anim(guyframe);
-                        Inc(guyframe);
-                        if guyframe = 7 then guyframe:=4;
+                        DrawGuy;
                     end;
         joy_right:  begin
-                        guyframe:=1;
+                        guy_dir := right;
+                        guy_frame := (guy_frame + 1) and 3;
+                        if guy_frame = 0 then begin
+                            Inc(guy_x);
+                        end;
+
                         if (hpos < 339) then begin
                             Dec(bike_px0); Dec(bike_px1);
                             Dec(bat_px0); Dec(bat_px1);
@@ -299,12 +312,7 @@ begin
                             inc(hpos);
                             // Inc(i);
                         end;
-                        if guy_x < 128 then begin
-                            Inc(guy_x);
-                        end;
-                        Guy_Anim(guyframe);
-                        Inc(guyframe);
-                        if guyframe = 4 then guyframe:=1;
+                        DrawGuy;
                     end;
     end;
 
@@ -325,20 +333,26 @@ begin
     colpf3:=$c;
 
     // remember backgroud at start at initial player position 
-    guy_oldx:= guy_x;
-    guy_oldy:= guy_y;
+    guy_x:=10;
     
-    guyframe:=1;
+    guy_oldx := guy_x;
+    guy_oldy := guy_y;
+    
+    guy_frame := 0;
+    guy_dir := right;
+    
     waitframe;
 
-    Guy_BackGet;
-    Guy_Anim(guyframe);
+    GetGuyBackground;
+    DrawGuy;
+
+    hpos:=7;
+
+    setBackgroundOffset(hpos);
 
     i:=1;
     repeat
         Joystick_Move;
-
-        setBackgroundOffset(hpos);
         
         Nextframe;
 
@@ -358,6 +372,9 @@ begin
         if i = _SIZE then i:=1;
     
         if (strig0 = 0) then gamestatus:= 2;
+
+        waitframe;
+        setBackgroundOffset(hpos);
         waitframe;
 
     until gamestatus <> 1;
@@ -390,9 +407,9 @@ begin
     CRT_WriteCentered(17,' Wystepuja '~);
 
     repeat
-
        waitframe; 
     until (strig0 = 0);
+
     gamestatus:= 1;
 end;
 
@@ -472,7 +489,7 @@ begin
     // hposp[2] := bat_px0;
     // hposp[3] := bat_px1;
     
-    music:=true;
+    music:=false;
 
     repeat
         case gamestatus of
