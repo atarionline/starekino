@@ -11,8 +11,8 @@ begin
     ;    bpl @-
         mva #$4f atari.colbk ; change backgroung color to white
     };
-        hposp[0] := bat_px0;
-        hposp[1] := bat_px1;
+        hposp[0] := ghost_pos_x[1,0];
+        hposp[1] := ghost_pos_x[1,1];
     asm {
         mwa #dli2 __dlivec
         plr ; restore registers
@@ -30,8 +30,8 @@ begin
     ;    bpl @-
          mva #$9f atari.colbk ; change backgroung color to white
     };
-        hposp[0] := sreel_px0;
-        hposp[1] := sreel_px1;
+        hposp[0] := ghost_pos_x[2,0];
+        hposp[1] := ghost_pos_x[2,1];
     asm {
         mwa #dli3 __dlivec
         plr ; restore registers
@@ -49,8 +49,8 @@ begin
     ;    bpl @-
         mva #$df atari.colbk ; change backgroung color to white
     };
-        hposp[0] := bike_px0;
-        hposp[1] := bike_px1;
+        hposp[0] := ghost_pos_x[0,0];
+        hposp[1] := ghost_pos_x[0,1];
     asm {
         mwa #dli4 __dlivec
 
