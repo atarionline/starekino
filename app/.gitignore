@@ -4,5 +4,6 @@
 *.opt
 *.dat
 *.ved
+output
 tools
 tools/*

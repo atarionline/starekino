@@ -1,6 +1,5 @@
 program wsk;
-{$librarypath '../../blibs/'}
-{$librarypath '../../MADS/blibs/'}
+{$librarypath 'blibs/'}
 uses atari, rmt, b_system, b_crt;
 
 const
@@ -8,7 +7,7 @@ const
 {$i const.inc}
 {$i types.inc}
 {$r resources.rc}
-const 
+const
 dlist_title: array [0..34] of byte = (
 		$70,$70,$70,$70,$70,$70,$70,$C2,lo(TITLEBACK_MEM),hi(TITLEBACK_MEM),
 		$82,$82,$82,$82,$82,$82,$82,$82,
@@ -24,7 +23,7 @@ var
     i : byte;
     frame: byte;
     gamestatus : Byte = 0;
-    tab: array [0..127] of byte; 
+    tab: array [0..127] of byte;
 
 
     pcolr : array[0..3] of byte absolute $D012;   // Player color
@@ -44,51 +43,51 @@ var
         ($00, $00, $00, $88, $70, $20, $10, $8, $8, $4, $4, $E, $15, $15, $11, $E, $00, $00);
 
     // Player 0 data
-    bat_p0Frame1 : array[0.._HEIGHT - 1] of byte = 
+    bat_p0Frame1 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $2, $2, $3, $F, $3E, $7F, $7F, $F3, $C3, $80, $00, $00, $00, $00, $00, $00);
-    bat_p0Frame2 : array[0.._HEIGHT - 1] of byte = 
+    bat_p0Frame2 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $00, $2, $C2, $73, $7B, $3E, $3F, $1F, $17, $3, $00, $00, $00, $00, $00, $00);
-    bat_p0Frame3 : array[0.._HEIGHT - 1] of byte = 
+    bat_p0Frame3 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $2, $2, $3, $F, $3E, $7F, $7F, $F3, $C3, $80, $00, $00, $00, $00, $00, $00);
-    bat_p0Frame4 : array[0.._HEIGHT - 1] of byte = 
+    bat_p0Frame4 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $00, $2, $C2, $73, $7B, $3E, $3F, $1F, $17, $3, $00, $00, $00, $00, $00, $00);
 
     // Player 1 data
-    bat_p1Frame1 : array[0.._HEIGHT - 1] of byte = 
+    bat_p1Frame1 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $40, $40, $C0, $F0, $BC, $FE, $FE, $CF, $C3, $1, $00, $00, $00, $00, $00, $00);
-    bat_p1Frame2 : array[0.._HEIGHT - 1] of byte = 
+    bat_p1Frame2 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $00, $40, $43, $CE, $DE, $BC, $FC, $F8, $E8, $C0, $00, $00, $00, $00, $00, $00);
-    bat_p1Frame3 : array[0.._HEIGHT - 1] of byte = 
+    bat_p1Frame3 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $40, $40, $C0, $F0, $BC, $FE, $FE, $CF, $C3, $1, $00, $00, $00, $00, $00, $00);
-    bat_p1Frame4 : array[0.._HEIGHT - 1] of byte = 
+    bat_p1Frame4 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $00, $40, $43, $CE, $DE, $BC, $FC, $F8, $E8, $C0, $00, $00, $00, $00, $00, $00);
 
     bat_pos: array[0.._SIZE - 1] of byte =
         (0,0,0,0,0,0,0,0,0,2,2,2,4,4,4,6,6,6,8,8,8,9,9,10,9,9,8,8,8,6,6,6,4,4,4,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,4,4,4,6,6,6,8,8,8,9,9,10,9,9,8,8,8,6,6,6,4,4,4,0,0,0,0,0,0,0,0);
 
     // Player 0 data
-    sreel_p0Frame1 : array[0.._HEIGHT - 1] of byte = 
+    sreel_p0Frame1 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $00, $3, $F, $1B, $11, $3B, $3E, $3E, $3B, $11, $1B, $F, $33, $00, $00, $00);
-    sreel_p0Frame2 : array[0.._HEIGHT - 1] of byte = 
+    sreel_p0Frame2 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $00, $3, $F, $1E, $1F, $37, $22, $36, $3F, $1E, $1C, $E, $3, $00, $00, $00);
 
-    sreel_p0Frame3 : array[0.._HEIGHT - 1] of byte = 
+    sreel_p0Frame3 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $00, $3, $F, $1B, $11, $3B, $3E, $3E, $3B, $11, $1B, $F, $3, $00, $00, $00);
 
-    sreel_p0Frame4 : array[0.._HEIGHT - 1] of byte = 
+    sreel_p0Frame4 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $00, $23, $2F, $3E, $1F, $37, $22, $36, $3F, $1E, $1C, $E, $3, $00, $00, $00);
 
     // Player 1 data
-    sreel_p1Frame1 : array[0.._HEIGHT - 1] of byte = 
+    sreel_p1Frame1 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $00, $E0, $F0, $D8, $88, $DC, $7C, $7C, $DC, $88, $D8, $F0, $E0, $00, $00, $00);
 
-    sreel_p1Frame2 : array[0.._HEIGHT - 1] of byte = 
+    sreel_p1Frame2 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $00, $C0, $70, $38, $78, $FC, $6C, $44, $EC, $F8, $78, $F4, $C4, $00, $00, $00);
 
-    sreel_p1Frame3 : array[0.._HEIGHT - 1] of byte = 
+    sreel_p1Frame3 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $00, $EC, $F0, $D8, $88, $DC, $7C, $7C, $DC, $88, $D8, $F0, $E0, $00, $00, $00);
 
-    sreel_p1Frame4 : array[0.._HEIGHT - 1] of byte = 
+    sreel_p1Frame4 : array[0.._HEIGHT - 1] of byte =
         ($00, $00, $00, $C0, $70, $38, $78, $FC, $6C, $44, $EC, $F8, $78, $F0, $C0, $00, $00, $00);
 
     sreel_pos: array[0.._SIZE - 1] of byte =
@@ -97,7 +96,7 @@ var
     // Player position
     bike_px0 : byte = 240; bike_py0 : byte = 90;
     bike_px1 : byte = 247; bike_py1 : byte = 90;
-    
+
     bat_px0 : byte = 80; bat_py0 : byte = 24;
     bat_px1 : byte = 88; bat_py1 : byte = 24;
 
@@ -168,7 +167,7 @@ begin
 end;
 
 // procedure Guy_BackSet;
-// // Set remembered back into background 
+// // Set remembered back into background
 // begin
 //     offset_x:=0;
 //     offset_y:=guy_oldy shl 7;
@@ -203,15 +202,15 @@ begin
     offset_y := BACKGROUND_MEM + (guy_y shl 7);
     bg_dest := offset_y + guy_oldx;
     guy_dest := offset_y + guy_x;
-    
+
     for i:=0 to _GUY_HEIGHT - 1 do
     begin
-      
+
         if guy_x <> guy_oldx then begin
             Move(Pointer(buff_addr), Pointer(bg_dest), 4);
             Move(Pointer(guy_dest), Pointer(buff_addr), 4);
         end;
-        
+
         Poke(guy_dest    , peek(tile_addr    ) or peek(buff_addr    ));
         Poke(guy_dest + 1, peek(tile_addr + 1) or peek(buff_addr + 1));
         Poke(guy_dest + 2, peek(tile_addr + 2) or peek(buff_addr + 2));
@@ -332,15 +331,15 @@ begin
     colpf2:=$c;
     colpf3:=$c;
 
-    // remember backgroud at start at initial player position 
+    // remember backgroud at start at initial player position
     guy_x:=10;
-    
+
     guy_oldx := guy_x;
     guy_oldy := guy_y;
-    
+
     guy_frame := 0;
     guy_dir := right;
-    
+
     waitframe;
 
     GetGuyBackground;
@@ -353,14 +352,14 @@ begin
     i:=1;
     repeat
         Joystick_Move;
-        
+
         Nextframe;
 
         // hposp[0]:=bike_px0;
         // hposp[1]:=bike_px1;
         // hposp[2]:=bat_px0;
         // hposp[3]:=bat_px1;
-        
+
         Dec(bike_px0); Dec(bike_px1);
         Inc(bat_px0); Inc(bat_px1);
         Dec(sreel_px0); Dec(sreel_px1);
@@ -370,7 +369,7 @@ begin
         if frame > 4 then frame := 1;
         Inc(i);
         if i = _SIZE then i:=1;
-    
+
         if (strig0 = 0) then gamestatus:= 2;
 
         waitframe;
@@ -402,12 +401,12 @@ begin
 
     EnableVBLI(@vbl_title);
     EnableDLI(@dli_title);
-    // nmien := $c0;	
+    // nmien := $c0;
 
     CRT_WriteCentered(17,' Wystepuja '~);
 
     repeat
-       waitframe; 
+       waitframe;
     until (strig0 = 0);
 
     gamestatus:= 1;
@@ -415,10 +414,10 @@ end;
 
 procedure endgame;
 begin
-    
+
     CRT_Clear;
     Move(Pointer(TITLE2_SCREEN), Pointer(TITLEBACK_MEM),$280);
-    
+
     for i:=0 to 15 do
         fntTable[i]:=hi(TITLE2_FONT1);
     // end;
@@ -431,11 +430,11 @@ begin
 
     EnableVBLI(@vbl_title);
     EnableDLI(@dli_title);
-    // nmien := $c0;	
+    // nmien := $c0;
 
     repeat
-    
-       waitframe; 
+
+       waitframe;
     until (strig0 = 0);
     gamestatus:= 0;
 end;
@@ -475,7 +474,7 @@ begin
     sizep[0] := 0;  // Player 0 normal size
     sizep[1] := 0;  // Player 1 normal size
     sizep[2] := 0;
-    sizep[3] := 0;  
+    sizep[3] := 0;
 
     // Player/missile color
     pcolr[0] := $0;
@@ -488,7 +487,7 @@ begin
     // hposp[1] := bike_px1;
     // hposp[2] := bat_px0;
     // hposp[3] := bat_px1;
-    
+
     music:=false;
 
     repeat
@@ -498,7 +497,7 @@ begin
             2: endgame;
         end;
     until false;
-    
+
     music:= false;
     msx.stop;
     // waitframe;
@@ -506,5 +505,5 @@ begin
     // DisableVBLI;
     nmien:=0;
     Dmactl:= 0;
-    
+
 end.
