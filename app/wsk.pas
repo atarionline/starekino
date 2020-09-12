@@ -1,5 +1,5 @@
 program wsk;
-{$librarypath 'blibs/'}
+{$librarypath 'blibs'}
 uses atari, rmt, b_system, b_crt;
 
 const
