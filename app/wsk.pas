@@ -119,28 +119,30 @@ var
         (GUY4_MEM, GUY5_MEM, GUY6_MEM, GUY5_MEM)
     );
 
-    ghost_frames_left: array [0..2, 0..3] of Word = (
-        (Word(@bike_p0), Word(@bike_p0), Word(@bike_p0), Word(@bike_p0)),
-        (Word(@bat_p0Frame1), Word(@bat_p0Frame2), Word(@bat_p0Frame3), Word(@bat_p0Frame4)),
-        (Word(@sreel_p0Frame1), Word(@sreel_p0Frame2), Word(@sreel_p0Frame3), Word(@sreel_p0Frame4))
+    ghost_frames_left: array [0..2, 0..3] of Pointer = (
+        (@bike_p0, @bike_p0, @bike_p0, @bike_p0),
+        (@sreel_p0Frame1, @sreel_p0Frame2, @sreel_p0Frame3, @sreel_p0Frame4),
+        (@bat_p0Frame1, @bat_p0Frame2, @bat_p0Frame3, @bat_p0Frame4)
+
     );
-    ghost_frames_right: array [0..2, 0..3] of Word = (
-        (Word(@bike_p1), Word(@bike_p1), Word(@bike_p1), Word(@bike_p1)),
-        (Word(@bat_p1Frame1), Word(@bat_p1Frame2), Word(@bat_p1Frame3), Word(@bat_p1Frame4)),
-        (Word(@sreel_p1Frame1), Word(@sreel_p1Frame2), Word(@sreel_p1Frame3), Word(@sreel_p1Frame4))
+    ghost_frames_right: array [0..2, 0..3] of Pointer = (
+        (@bike_p1, @bike_p1, @bike_p1, @bike_p1),
+        (@sreel_p1Frame1, @sreel_p1Frame2, @sreel_p1Frame3, @sreel_p1Frame4),
+        (@bat_p1Frame1, @bat_p1Frame2, @bat_p1Frame3, @bat_p1Frame4)
+
     );
 
     ghost_pos_x: array [0..2, 0..1] of byte = (
     // left and right side ghost's x positions
         (240, 247),
-        (80, 88),
-        (100, 107)
+        (100, 107),
+        (80, 88)
     );
     ghost_pos_y: array [0..2, 0..1] of byte = (
     // left and right side ghost's y positions
         (90, 90),
-        (24, 24),
-        (71, 71)
+        (71, 71),
+        (24, 24)
     );
 	fntTable: array [0..29] of byte;
 
@@ -244,8 +246,8 @@ procedure NextFrame;
 begin
     for i:=0 to 2 do
     begin
-        Move(Pointer(ghost_frames_left[i,frame]), Pointer(PMGBASE + 512 + ghost_pos_y[i,0]), _HEIGHT);
-        Move(Pointer(ghost_frames_right[i,frame]), Pointer(PMGBASE + 512 + 128 + ghost_pos_y[i,1]), _HEIGHT);
+        Move(ghost_frames_left[i,frame], Pointer(PMGBASE + 512 + ghost_pos_y[i,0]), _HEIGHT);
+        Move(ghost_frames_right[i,frame], Pointer(PMGBASE + 512 + 128 + ghost_pos_y[i,1]), _HEIGHT);
         // Poke(ghost_frames_left[frame,i], Peek(PMGBASE + 512 + ghost_pos[0,i]), _HEIGHT);
         // Poke(ghost_frames_right[frame,i], Peek(PMGBASE + 512 + 128 + ghost_pos[1,i]), _HEIGHT);
     end;
