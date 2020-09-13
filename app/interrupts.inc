@@ -11,6 +11,8 @@ begin
     ;    bpl @-
         mva #$4f atari.colbk ; change backgroung color to white
     };
+        Move(ghost_frames_left[2,frame], Pointer(PMGBASE + 512 + ghost_pos_y[2,0]), _HEIGHT);
+        Move(ghost_frames_right[2,frame], Pointer(PMGBASE + 512 + 128 + ghost_pos_y[2,1]), _HEIGHT);
         hposp[0] := ghost_pos_x[2,0];
         hposp[1] := ghost_pos_x[2,1];
     asm {
@@ -30,8 +32,10 @@ begin
     ;    bpl @-
          mva #$9f atari.colbk ; change backgroung color to white
     };
-        hposp[0] := ghost_pos_x[1,0];
-        hposp[1] := ghost_pos_x[1,1];
+        // Move(ghost_frames_left[1,frame], Pointer(PMGBASE + 512 + ghost_pos_y[1,0]), _HEIGHT);
+        // Move(ghost_frames_right[1,frame], Pointer(PMGBASE + 512 + 128 + ghost_pos_y[1,1]), _HEIGHT);
+        // hposp[0] := ghost_pos_x[1,0];
+        // hposp[1] := ghost_pos_x[1,1];
     asm {
         mwa #dli3 __dlivec
         plr ; restore registers
@@ -49,6 +53,8 @@ begin
     ;    bpl @-
         mva #$df atari.colbk ; change backgroung color to white
     };
+        Move(ghost_frames_left[0,frame], Pointer(PMGBASE + 512 + ghost_pos_y[0,0]), _HEIGHT);
+        Move(ghost_frames_right[0,frame], Pointer(PMGBASE + 512 + 128 + ghost_pos_y[0,1]), _HEIGHT);
         hposp[0] := ghost_pos_x[0,0];
         hposp[1] := ghost_pos_x[0,1];
     asm {

@@ -242,17 +242,17 @@ begin
 end;
 
 
-procedure NextFrame;
-begin
-    for i:=0 to 2 do
-    begin
-        Move(ghost_frames_left[i,frame], Pointer(PMGBASE + 512 + ghost_pos_y[i,0]), _HEIGHT);
-        Move(ghost_frames_right[i,frame], Pointer(PMGBASE + 512 + 128 + ghost_pos_y[i,1]), _HEIGHT);
-        // Poke(ghost_frames_left[frame,i], Peek(PMGBASE + 512 + ghost_pos[0,i]), _HEIGHT);
-        // Poke(ghost_frames_right[frame,i], Peek(PMGBASE + 512 + 128 + ghost_pos[1,i]), _HEIGHT);
-    end;
+// procedure NextFrame;
+// begin
+//     for i:=0 to 2 do
+//     begin
+//         Move(ghost_frames_left[i,frame], Pointer(PMGBASE + 512 + ghost_pos_y[i,0]), _HEIGHT);
+//         Move(ghost_frames_right[i,frame], Pointer(PMGBASE + 512 + 128 + ghost_pos_y[i,1]), _HEIGHT);
+//         // Poke(ghost_frames_left[frame,i], Peek(PMGBASE + 512 + ghost_pos[0,i]), _HEIGHT);
+//         // Poke(ghost_frames_right[frame,i], Peek(PMGBASE + 512 + 128 + ghost_pos[1,i]), _HEIGHT);
 
-end;
+//     end;
+// end;
 
 procedure Joystick_Move;
 begin
@@ -332,7 +332,7 @@ begin
     repeat
         Joystick_Move;
 
-        Nextframe;
+        // Nextframe;
 
         for i:=0 to 1 do
         begin
